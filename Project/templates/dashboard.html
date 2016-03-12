@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+    <!-- header-->
+    <div class="col-md-12">
+        <div class="pull-right btn-group" role="group" id="header">
+          <button class="btn btn-primary active_on_hover" role="button">History</button>
+          <button class="btn btn-primary active_on_hover" id="middle" role="button">Profile</button>
+          <button class="btn btn-primary active_on_hover" role="button">Log out</button>
+        </div>
+    </div>
+    <!-- test-->
+    <div class="col-md-12">
+        <div class="col-md-3 btn btn-warning">
+            MAINA
+        </div>
+        <div class="col-md-9 btn btn-primary">
+            MAINA
+        </div>
+    </div>
+    <!-- menu on the left-->
+    <div class="col-md-3">
+        <div class="col-md-13">
+            <div class="btn-group btn-group-justified" role="group">
+                <div class="active_on_hover btn btn-success centered glyphicon glyphicon-plus" role="button" ></div>
+                <div class="active_on_hover btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
+            </div>
+        </div>
+        <div class="col-md-13">
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" class="btn-block active_on_hover"><a href="#">Folder 1</a></li>
+                <li role="presentation" class="btn-block active_on_hover"><a href="#">Folder 2</a></li>
+                <li role="presentation" class="btn-block active_on_hover"><a href="#">Folder 3</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- all the elements BUT the menu on the left-->
+    <div class="col-md-9 pull-right">
+        <div></div>
+    </div>
+    
+</div>
+<script src="{% static "hello.js" %}"></script>
+<script src="{% static "js/headers.js" %}"></script>
+<script src="{% static "js/slider.js" %}"></script>
+{% endblock %}

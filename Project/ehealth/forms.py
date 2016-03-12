@@ -50,4 +50,4 @@ class RegisterForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        fields = ['username', 'password', 'repeat_password', 'first_name', 'last_name', 'email']

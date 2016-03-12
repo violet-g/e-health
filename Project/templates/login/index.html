@@ -7,7 +7,7 @@
     <div class="row">
       <div class="col-sm-6">
         <h1>Log in</h1>
-        <form action="/login/" method="post">
+        <form action="/ehealth/" method="post">
           {% csrf_token %}
           {{ login_form | bootstrap}}
           <input class="btn btn-warning" type="submit" value="Log in">
@@ -16,7 +16,7 @@
 
       <div class="col-sm-6">
         <h1>Register</h1>
-        <form action="/login/" method="post">
+        <form action="/ehealth/" method="post">
           {% csrf_token %}
           {{ register_form | bootstrap }}
           <input class="btn btn-warning" type="submit" value="Register">
