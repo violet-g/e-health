@@ -6,6 +6,13 @@ class Category(models.Model):
     name = models.CharField(max_length=256)
 
 
+class User(models.Model):
+    username = models.CharField(max_length = 20, unique='true')
+    password = models.CharField(max_length = 20)
+    first_name = models.CharField(max_length = 30)
+    last_name = models.CharField(max_length = 30)
+    email = models.EmailField(max_length = 50)
+
 
 
 class Page(models.Model):
@@ -52,7 +59,8 @@ class Folder(models.Model):
 class UserHistory(models.Model):
     user = models.ForeignKey(Searcher,on_delete=models.CASCADE)
     query = models.ForeignKey(Query,on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now=True,auto_now_add=True)
+    # timestamp = models.DateTimeField(auto_now=True,auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now=True)
 
 class FolderPage(models.Model):
     folder = models.ForeignKey(Folder,on_delete=models.CASCADE)

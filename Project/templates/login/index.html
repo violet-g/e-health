@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% load bootstrap %}
+
 {% block content %}
   <div class="container">
     <div class="row">
@@ -7,8 +9,8 @@
         <h1>Log in</h1>
         <form action="/login/" method="post">
           {% csrf_token %}
-          {{ login_form.as_p }}
-          <input type="submit" value="Log in">
+          {{ login_form | bootstrap}}
+          <input class="btn btn-warning" type="submit" value="Log in">
         </form>
       </div>
 
@@ -16,8 +18,8 @@
         <h1>Register</h1>
         <form action="/login/" method="post">
           {% csrf_token %}
-          {{ register_form.as_p }}
-          <input type="submit" value="Register">
+          {{ register_form | bootstrap }}
+          <input class="btn btn-warning" type="submit" value="Register">
         </form>
       </div>
     </div>
