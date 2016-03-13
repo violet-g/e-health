@@ -47,7 +47,7 @@ class Searcher(models.Model):
 
 
 class Folder(models.Model):
-        User = models.ForeignKey(Searcher)
+        user = models.ForeignKey(Searcher, related_name="folders")
         name = models.CharField(max_length=128, unique=True)
         pages = models.ManyToManyField(Page,blank=True)
         public = models.BooleanField()

@@ -19,7 +19,6 @@ def index(request):
                 return HttpResponseRedirect("dashboard")
                 #return HttpResponse('successfully registered')
         elif form_type == 'login':
-            print request.POST
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
@@ -43,25 +42,21 @@ def index(request):
 
 @login_required()
 def dashboard(request):
-    folders=["Papka edno",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "MAINA",
-            "GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI "]
-    context_dict={"folders":folders}
-    return render(request, 'dashboard.html', context_dict)
+    context_dict={}
+    try:
+        user = request.user     #get the cureent logged in user
+        
+        #get them from the User table and search for them in the searcher table,
+        # since the user is of type django User whatever and the search key needs to be of the same type
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        folders = searcher.folders.all()
+        context_dict["folders"]=folders
+    except:
+        return HttpResponse("something went wrong")
+    return render(request, 'dashboard.html',context_dict)
     
 def test_ajax(request):
     if request.method=='GET':
