@@ -1,5 +1,7 @@
 from django.forms import *
-from ehealth.models import Searcher, User
+from ehealth.models import Searcher
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import *
 
 class SearcherForm(ModelForm):
     forename = CharField(max_length=128,help_text="Please enter your forename")
@@ -27,7 +29,7 @@ class LoginForm(Form):
             raise forms.ValidationError('Username doesn\'t exist', code='not_exist')
 
         password = self.cleaned_data.get('password')
-        if password != user.password:
+        if check_password(password,user.password) == False: #password != user.password:
             raise forms.ValidationError('Wrong password', code='wrong_password')
         return self.cleaned_data
 
@@ -46,8 +48,23 @@ class RegisterForm(ModelForm):
         password2 = self.cleaned_data.get('repeat_password')
         if password1 != password2:
             raise forms.ValidationError('Passwords don\'t match.', code='not_match')
+        try:
+            userExists = User.objects.get(username=self.cleaned_data.get("username"))
+        except:
+            userExists = None
+        if userExists:
+            raise forms.ValidationError("Username is already in use")
         return self.cleaned_data
 
+    def register(self,username,password,email,first_name,last_name):
+        newuser = User.objects.create_user(username=username, email=email, password = password,first_name=first_name,last_name=last_name )
+        newuser.save()
+
+    def save(self, commit=True):
+        self.register(self.cleaned_data.get("username"),self.cleaned_data.get("password"),self.cleaned_data.get("email"),self.cleaned_data.get("first_name"),self.cleaned_data.get("last_name"))
+        newSearcher = Searcher(user = User.objects.get(username=self.cleaned_data.get("username")))
+        newSearcher.save()
+
     class Meta:
-        model = User
-        fields = ['username', 'password', 'repeat_password', 'first_name', 'last_name', 'email']
+        model = Searcher
+        fields = ['email']
