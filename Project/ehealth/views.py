@@ -16,13 +16,19 @@ def index(request):
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
                 register_form.save(commit=True)
-                return HttpResponse('successfully registered')
+                return HttpResponseRedirect("dashboard")
+                #return HttpResponse('successfully registered')
         elif form_type == 'login':
             print request.POST
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
-                return HttpResponse('successfully logged in')
+                username = request.POST["username"]
+                password = request.POST["password"]
+                user = authenticate(username=username,password=password)
+                login(request,user)
+                return HttpResponseRedirect("dashboard")
+                #return HttpResponse('successfully logged in')
         else:
             return HttpResponse('Unknown error occurred.')
     else:
@@ -35,6 +41,7 @@ def index(request):
     })
 
 
+@login_required()
 def dashboard(request):
     folders=["Papka edno",
             "MAINA",
@@ -62,10 +69,16 @@ def test_ajax(request):
     return HttpResponse("No maina")
 
 def new_folder_ajax(request):
-    fname=None
-    if request.method=='POST':
-        fname=request.POST.get('folder')
-    return HttpResponse(fname)
+    fname="NONE"
+    print "THE REQUEST"
+    print request.POST
+    if request.method == 'POST' and request.is_ajax():
+        print "HUI"
+        fname=request.POST['folder']
+        print "HUI"
+    print request.POST
+    print json.dumps({'name': fname})
+    return HttpResponse(json.dumps({'name': fname}))
 
 
 #

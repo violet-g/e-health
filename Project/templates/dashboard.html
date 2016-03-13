@@ -171,7 +171,8 @@
                 <h4 class="modal-title" id="myModalLabel">Create new folder</h4>
               </div>
               <div class="modal-body">
-                <input type="folder" class="form-control" id="new_folder_name" placeholder="Folder name">
+                {% csrf_token %} 
+                <input type="folder" class="form-control" name="new_folder_name" placeholder="Folder name">
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
