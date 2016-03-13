@@ -7,4 +7,5 @@ urlpatterns = patterns('',
         url(r"login/",views.user_login,name="login"),
         url(r"logout/",views.user_logout,name="logout"),
         url(r"dashboard/",views.dashboard,name="dashboard"),
+        url(r'^test_ajax/$', views.test_ajax, name='test_ajax'),
         )

@@ -1,10 +1,29 @@
 .headerBorder {
-    border-radius: 100px;
-    color: #ebe6eb;
+    border-radius: 10px;
 }
 .mtb20 {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.mtb15 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.mtb10 {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .mb10 {

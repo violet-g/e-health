@@ -36,6 +36,11 @@ def index(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html')
+    
+def test_ajax(request):
+    if request.method=='GET':
+        return HttpResponse("MAINA")
+    return HttpResponse("No maina")
 
 # Create your views here.
 def register(request):
