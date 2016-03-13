@@ -36,12 +36,36 @@ def index(request):
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    folders=["Papka edno",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "MAINA",
+            "GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI GUZA ME BOLI "]
+    context_dict={"folders":folders}
+    return render(request, 'dashboard.html', context_dict)
     
 def test_ajax(request):
     if request.method=='GET':
         return HttpResponse("MAINA")
     return HttpResponse("No maina")
+
+def new_folder_ajax(request):
+    fname=None
+    if request.method=='POST':
+        fname=request.POST.get('folder')
+    return HttpResponse(fname)
 
 
 #
