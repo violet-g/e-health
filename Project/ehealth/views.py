@@ -4,7 +4,7 @@ from ehealth.forms import SearcherForm, LoginForm, RegisterForm
 from ehealth.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 
 
@@ -71,9 +71,11 @@ def new_folder_ajax(request):
         print "HUI"
         fname=request.POST['folder']
         print "HUI"
-    print request.POST
-    print json.dumps({'name': fname})
-    return HttpResponse(json.dumps({'name': fname}))
+        print request.POST
+        print json.dumps({'name': fname})
+        data={'name': "maina"}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')
 
 
 #
