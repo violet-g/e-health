@@ -1,1 +1,6 @@
 *.pyc
+*.pptx
+*.db
+Project/.idea/
+Project/**/*.pyc
+Project/db.sqlite3
