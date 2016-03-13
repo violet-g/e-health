@@ -42,13 +42,19 @@ def index(request):
 
 @login_required()
 def dashboard(request):
-   # try:
-   #     user = request.user
-   #     #searcher = Searcher.objects.get(username=user)
-   #     print user + "YES"
-   # except:
-   #     print "nooo"
-   #     print request.user
+    try:
+        user = request.user     #get the cureent logged in user
+        
+        #get them from the User table and search for them in the searcher table,
+        # since the user is of type django User whatever and the search key needs to be of the same type
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        folders = searcher.folders.all()
+        
+    except:
+        return HttpResponse("something went wrong")
     return render(request, 'dashboard.html')
     
 def test_ajax(request):
