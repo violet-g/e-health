@@ -6,12 +6,12 @@ class Category(models.Model):
     name = models.CharField(max_length=256)
 
 
-class User(models.Model):
-    username = models.CharField(max_length = 20, unique='true')
-    password = models.CharField(max_length = 20)
-    first_name = models.CharField(max_length = 30)
-    last_name = models.CharField(max_length = 30)
-    email = models.EmailField(max_length = 50)
+#class User(models.Model):
+#    username = models.CharField(max_length = 20, unique='true')
+#    password = models.CharField(max_length = 20)
+#    first_name = models.CharField(max_length = 30)
+#    last_name = models.CharField(max_length = 30)
+#    email = models.EmailField(max_length = 50)
 
 
 
