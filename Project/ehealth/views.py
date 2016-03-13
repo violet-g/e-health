@@ -19,7 +19,6 @@ def index(request):
                 return HttpResponseRedirect("dashboard")
                 #return HttpResponse('successfully registered')
         elif form_type == 'login':
-            print request.POST
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
@@ -43,6 +42,13 @@ def index(request):
 
 @login_required()
 def dashboard(request):
+   # try:
+   #     user = request.user
+   #     #searcher = Searcher.objects.get(username=user)
+   #     print user + "YES"
+   # except:
+   #     print "nooo"
+   #     print request.user
     return render(request, 'dashboard.html')
     
 def test_ajax(request):
