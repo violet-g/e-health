@@ -1,3 +1,33 @@
 .headerBorder {
-    border-radius: 10px;
+    border-radius: 100px;
+    color: #ebe6eb;
+}
+.mtb20 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+
+.mrl10 {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.br {
+    border-right: 3px solid;
+}
+.nobt {
+    border-top: none !important;
+}
+
+.noborder {
+    border: none !important;
 }
