@@ -13,8 +13,10 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
     // });
     
     $("#create").click(function(){
-        var fname=$("input[name=new_folder_name]").val();
+        var fname=$.trim($("input[name=new_folder_name]").val());
         $("input[name=new_folder_name]").val('');
+        if(fname=="")
+            return;
         $.ajax({
             url : '/ehealth/new_folder_ajax/', // the endpoint,commonly same url
             type : "POST", // http method

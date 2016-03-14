@@ -50,3 +50,7 @@
 .noborder {
     border: none !important;
 }
+
+.nofocus, .btn:focus {
+    outline: none !important;
+}

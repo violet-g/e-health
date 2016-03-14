@@ -8,74 +8,36 @@ from ehealth.models import *
 
 def populate():
 
-    python_cat = add_cat(name='Python',views=128,likes=64)
+    user1 = add_searcher("boris","boris@test.com","boris","boris","lazarov")
+    user2 = add_searcher("zdravko","zdravko@test.com","zdravko","zdravko","ivanov")
 
-    add_page(cat=python_cat,
-        title="Official Python Tutorial",
-        
-        url="http://docs.python.org/2/tutorial/")
+    cat1 = add_category("DE_ac")
+    cat2 = add_category("it hurts")
 
-    add_page(cat=python_cat,
-        title="How to Think like a Computer Scientist",
-        url="http://www.greenteapress.com/thinkpython/")
+    bFolder = add_folder(user1,"boris\'s folder","true")
+    zFolder = add_folder(user2,"zdravko\'s folder","false")
 
-    add_page(cat=python_cat,
-        title="Learn Python in 10 Minutes",
-        url="http://www.korokithakis.net/tutorials/python/")
+    page1 = add_page("Facebook","Healthfinder","This is a test page","https://www.facebook.com",100,85,43,15)
+    page2 = add_page("Google","Bing","This is also a test page","https://www.google.co.uk/",89,76,75,156)
 
-    django_cat = add_cat("Django",views=64,likes=32)
+    folderContent1 = add_pageFolder(page1,bFolder)
+    folderContent2 = add_pageFolder(page2,bFolder)
+    folderContent3 = add_pageFolder(page1,zFolder)
 
-    add_page(cat=django_cat,
-        title="Official Django Tutorial",
-        url="https://docs.djangoproject.com/en/1.5/intro/tutorial01/")
-
-    add_page(cat=django_cat,
-        title="Django Rocks",
-        url="http://www.djangorocks.com/")
-
-    add_page(cat=django_cat,
-        title="How to Tango with Django",
-        url="http://www.tangowithdjango.com/")
-
-    frame_cat = add_cat("Other Frameworks",views=32,likes=16)
-
-    add_page(cat=frame_cat,
-        title="Bottle",
-        url="http://bottlepy.org/docs/dev/")
-
-    add_page(cat=frame_cat,
-        title="Flask",
-        url="http://flask.pocoo.org")
-
-    # Print out what we have added to the user.
-    for c in Category.objects.all():
-        for p in Page.objects.filter(category=c):
-            print "- {0} - {1}".format(str(c), str(p))
+    pageCat = add_pageCategory(page1,cat1)
+    pageCat2 = add_pageCategory(page1,cat2)
+    pageCat3 = add_pageCategory(page2,cat1)
 
 
+def add_page(title,source,summary,url,readability_score,sentiment_score,subjectivity_score,times_saved):
+    newPage = Page(title=title,source=source,summary=summary,url=url,readability_score=readability_score,sentiment_score=sentiment_score,subjectivity_score=subjectivity_score,times_saved=times_saved)
+    newPage.save()
+    return newPage
 
-
-
-def add_page(cat, title, url, views=0):
-    p = Page.objects.get_or_create(category=cat, title=title)[0]
-    p.url=url
-    p.views=views
-    p.save()
-    return p
-
-
-
-
-class Folder(models.Model):
-        user = models.ForeignKey(Searcher, related_name="folders")
-        name = models.CharField(max_length=128, unique=True)
-        pages = models.ManyToManyField(Page,blank=True)
-        public = models.BooleanField(default=False)
-
-
-
-def add_folder(user,name,pages,public):
-
+def add_folder(user,name,public):
+    newFolder = Folder(user=user,name=name,public=public)
+    newFolder.save()
+    return newFolder
 
 def add_category(name):
     newCategory = Category(name=name)
@@ -89,7 +51,18 @@ def add_searcher(username,email,password,first_name,last_name):
         newSearcher.save()
         return newSearcher
 
+def add_pageFolder(page,folder):
+    relationship = FolderPage(folder=folder,page=page)
+    relationship.save()
+    return relationship
+
+def add_pageCategory(page,category):
+    relationship = PageCategory(page=page,category=category)
+    relationship.save()
+    return relationship
+
+
 # Start execution here!
 if __name__ == '__main__':
-    print "Starting Rango population script..."
+    print "Starting Ehealth population script..."
     populate()
