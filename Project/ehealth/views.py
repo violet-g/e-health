@@ -40,7 +40,7 @@ def index(request):
     })
 
 
-@login_required()
+#@login_required()
 def dashboard(request):
     context_dict={}
     try:
@@ -55,7 +55,8 @@ def dashboard(request):
         folders = searcher.folders.all()
         context_dict["folders"]=folders
     except:
-        return HttpResponse("something went wrong")
+        return HttpResponseRedirect("/ehealth/")
+        #return HttpResponse("something went wrong")
     return render(request, 'dashboard.html',context_dict)
     
 def test_ajax(request):
