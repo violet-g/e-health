@@ -56,7 +56,6 @@ def populate():
 
 
 
-
 def add_page(cat, title, url, views=0):
     p = Page.objects.get_or_create(category=cat, title=title)[0]
     p.url=url
@@ -64,18 +63,31 @@ def add_page(cat, title, url, views=0):
     p.save()
     return p
 
-def add_category(name,views,likes):
-    c = Category.objects.get_or_create(name=name)[0]
-    c.views = views
-    c.likes = likes
-    c.save()
-    return c
+
+
+
+class Folder(models.Model):
+        user = models.ForeignKey(Searcher, related_name="folders")
+        name = models.CharField(max_length=128, unique=True)
+        pages = models.ManyToManyField(Page,blank=True)
+        public = models.BooleanField(default=False)
+
+
+
+def add_folder(user,name,pages,public):
+
+
+def add_category(name):
+    newCategory = Category(name=name)
+    newCategory.save()
+    return newCategory
 
 def add_searcher(username,email,password,first_name,last_name):
         newuser = User.objects.create_user(username=username, email=email, password = password,first_name=first_name,last_name=last_name )
         newuser.save()
         newSearcher = Searcher(user = User.objects.get(username=username))
         newSearcher.save()
+        return newSearcher
 
 # Start execution here!
 if __name__ == '__main__':
