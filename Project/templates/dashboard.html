@@ -25,21 +25,21 @@
             <div class="btn-group btn-group-justified" role="group">
                 <div class="btn btn-success centered glyphicon glyphicon-plus" role="button"
                       type="button" data-toggle="modal" data-target="#new_folder_modal"></div>
-                <div class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
+                <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
         <div class="col-md-13 mt10 mb10">
-            <ul class="nav nav-pills nav-stacked">
+            <ul class="nav nav-pills nav-stacked folder_list">
               
               {% if folders %}
               {% for folder in folders %}
                 <li role="presentation" class="btn-block"><a href="#">{{folder.name}}</a></li>
               {% endfor %}
               {% endif %}
-                <li role="presentation" class="btn-block active_on_click active_on_hover"><a href="#">Folder 2</a></li>
-                <li role="presentation" class="btn-block active_on_click active_on_hover"><a href="#">Folder 3</a></li>
+                <li role="presentation" class="btn-block active_on_click"><a href="#">Folder 2</a></li>
+                <li role="presentation" class="btn-block active_on_click"><a href="#">Folder 3</a></li>
                 <!-- Button trigger modal -->
-                <li type="button" class="btn-block active_on_hover" data-toggle="modal" data-target="#myModal">
+                <li type="button" class="btn-block" data-toggle="modal" data-target="#myModal">
                   <a href="#">Modal</a>
                 </li>
             </ul>
@@ -140,6 +140,12 @@
                 <p class="list-group-item-text mtb10">Source: Bing</p>
           </a>
           
+          <a href="#" class="list-group-item active_on_click mtb20 table table-responsive">
+                <h4 class="list-group-item-heading mtb15">Title</h4>
+                <p class="list-group-item-text mtb10">Summary</p>
+                <p class="list-group-item-text mtb10">Source: Bing</p>
+          </a>
+          
         </div>
         
     </div>
@@ -190,5 +196,6 @@
 <script src="{% static "js/dashboard.js" %}"></script>
 <script src="{% static "js/buttons.js" %}"></script>
 <script src="{% static "js/modal.js" %}"></script>
+<script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/new_folder_modal.js" %}"></script>
 {% endblock %}

@@ -64,16 +64,18 @@ def test_ajax(request):
     return HttpResponse("No maina")
 
 def new_folder_ajax(request):
-    fname="NONE"
-    print "THE REQUEST"
-    print request.POST
+    fname=None
     if request.method == 'POST' and request.is_ajax():
-        print "HUI"
         fname=request.POST['folder']
-        print "HUI"
-        print request.POST
-        print json.dumps({'name': fname})
-        data={'name': "maina"}
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        new_folder=Folder(user=searcher, name=fname)
+        new_folder.save()
+        
+        data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
