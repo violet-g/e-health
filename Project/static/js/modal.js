@@ -1,3 +1,3 @@
 $('#myModal').on('show.bs.modal', function(event){
-    alert("malka maina");
+    // alert("malka maina");
 })

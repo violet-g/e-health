@@ -4,7 +4,7 @@ from ehealth.forms import SearcherForm, LoginForm, RegisterForm
 from ehealth.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 
 
@@ -42,6 +42,7 @@ def index(request):
 
 @login_required()
 def dashboard(request):
+    context_dict={}
     try:
         user = request.user     #get the cureent logged in user
         
@@ -52,15 +53,31 @@ def dashboard(request):
         
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
         folders = searcher.folders.all()
-        
+        context_dict["folders"]=folders
     except:
         return HttpResponse("something went wrong")
-    return render(request, 'dashboard.html')
+    return render(request, 'dashboard.html',context_dict)
     
 def test_ajax(request):
     if request.method=='GET':
         return HttpResponse("MAINA")
     return HttpResponse("No maina")
+
+def new_folder_ajax(request):
+    fname=None
+    if request.method == 'POST' and request.is_ajax():
+        fname=request.POST['folder']
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        new_folder=Folder(user=searcher, name=fname)
+        new_folder.save()
+        
+        data={'name': fname}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')
 
 
 #

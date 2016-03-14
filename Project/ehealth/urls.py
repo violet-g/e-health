@@ -8,4 +8,5 @@ urlpatterns = patterns('',
         url(r"logout/",views.user_logout,name="logout"),
         url(r"dashboard/",views.dashboard,name="dashboard"),
         url(r'^test_ajax/$', views.test_ajax, name='test_ajax'),
+        url(r'^new_folder_ajax/$', views.new_folder_ajax, name='new_folder_ajax'),
         )
