@@ -79,6 +79,27 @@ def new_folder_ajax(request):
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
+def delete_folder_ajax(request):
+    fname=None
+    if request.method == 'POST' and request.is_ajax():
+        fname=request.POST['folder']
+        
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        delete_folder=Folder.objects.filter(name=fname)
+        delete_folder.delete()
+        
+        data={'name': fname}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')
+    
+def search_ajax(request):
+    if request.method == 'POST' and request.is_ajax():
+        cat=request.POST['category']
+        query=request.POST['query']
+        data={'query':query,'category':cat}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')
+
 
 #
 # Create your views here.
