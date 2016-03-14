@@ -4,6 +4,7 @@ import django
 django.setup()
 from ehealth.models import *
 
+#zdravko is cool
 
 
 def populate():
