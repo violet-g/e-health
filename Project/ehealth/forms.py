@@ -67,4 +67,4 @@ class RegisterForm(ModelForm):
 
     class Meta:
         model = Searcher
-        fields = ['email']
+        fields = ['username', 'password', 'repeat_password', 'email']
