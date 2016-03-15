@@ -5,6 +5,7 @@ from ehealth.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from ehealth.bing_search import bing_query
 
 
 
@@ -97,10 +98,14 @@ def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
         query=request.POST['query']
-        data={'query':query,'category':cat}
+
+        res = bing_query(cat + " " + query)
+
+        data={'query':query,'category':cat, "result":res}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
+#def search()
 
 #
 # Create your views here.
