@@ -22,8 +22,8 @@ def index(request):
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
-                username = request.POST["username"]
-                password = request.POST["password"]
+                username = request.POST["username"].strip()
+                password = request.POST["password"].strip()
                 user = authenticate(username=username,password=password)
                 login(request,user)
                 return HttpResponseRedirect("dashboard")
