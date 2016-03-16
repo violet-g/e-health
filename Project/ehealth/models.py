@@ -38,7 +38,7 @@ class Query(models.Model):
 class Searcher(models.Model):
     user = models.OneToOneField(User)
     website = models.URLField(blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
+    picture = models.FileField(upload_to='profile_images', blank=True)
     history = models.ManyToManyField(Query)
     #WHAT ELSE DO WE NEED
 

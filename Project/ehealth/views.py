@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 
 
+
 def index(request):
     if request.method == 'POST':
         form_type = request.POST.get('form_type').encode('UTF-8')
@@ -15,9 +16,9 @@ def index(request):
             login_form = LoginForm()
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
-                register_form.save(commit=True)
+                register(request.POST)
+                #register_form.save(commit=True)
                 return HttpResponseRedirect("dashboard/")
-                #return HttpResponse('successfully registered')
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
@@ -38,6 +39,16 @@ def index(request):
         'login_form': login_form,
         'register_form': register_form,
     })
+
+def register(request):
+    newuser = User.objects.create_user(username=request.POST["username"],email= request.POST["email"],
+                                       password = request.POST["password"],first_name=request.POST["first_name"],last_name=request.POST["last_name"] )
+    newuser.save()
+    newSearcher = Searcher(user = User.objects.get(username=request.POST["username"]))
+    #if request.FILES["picture"]:
+    #    newSearcher.picture =
+            #newSearcher.picture = self.cleaned_data.get("picture")
+    newSearcher.save()
 
 
 def dashboard(request):
@@ -113,26 +124,26 @@ def update_profile(request):
             user=User.objects.get(username=user)
             searcher=Searcher.objects.get(user=user)
             if request.POST["password"]:
-                user.update(password=request.get("password"))
+                user.set_password(request.POST["password"])
+                #user.update(password=request.get("password"))
                 #user.password = request.get("password")
                 #user.password.save()
-
-
-
             # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
             if request.POST["email"]:
                 #HttpResponse("new e-mail found")
                 #user.update(email=request.get("email"))
                 user.email = request.POST["email"]
                 #user.save should be at the end of the function
-                user.save()
+                #user.save()
 
 
             if request.POST["first_name"]:
-                user.update(first_name=request.get("first_name"))
+                user.first_name = request.POST["first_name"]
             if request.POST["last_name"]:
-                user.update(last_name=request.get("last_name"))
-            return HttpResponseRedirect("dashboard/")
+                user.last_name = request.POST["last_name"]
+                #user.update(last_name=request.get("last_name"))
+            user.save()
+            return HttpResponseRedirect("/ehealth/dashboard/")
         else:
             return HttpResponseRedirect("/ehealth/")
 
