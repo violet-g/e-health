@@ -1,5 +1,4 @@
 $('#new_folder_modal').on('shown.bs.modal', function(event){
-    console.log("shown");
     // $("#create").click(function(){
     //     console.log(fname)
     //     $.post('/ehealth/new_folder_ajax',
@@ -11,6 +10,8 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
     //         alert('folder created: ' + data);
     //     });
     // });
+    
+    $("#new_folder_name").focus();
     
     $("#create").click(function(){
         var fname=$.trim($("input[name=new_folder_name]").val());
@@ -39,6 +40,9 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
             }
          });
     });
-    
-    
+    $("#new_folder_name").keypress(function(event){
+        if (event.which == 13) {
+            $("#create").trigger('click');
+        }
+    });
 })

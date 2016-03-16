@@ -64,7 +64,7 @@ def bing_query(search_terms):
         print "Error when querying the Bing API: ", e
 
     # Return the list of results to the calling function.
-    print results
+    # print results
     return results
 
 #run_query("cancer")

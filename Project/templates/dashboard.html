@@ -63,7 +63,7 @@
                     <li><a class="category_option" href="#">Users</a></li>
                   </ul>
                 </div><!-- /btn-group -->
-                <input type="text" name="search_bar" class="form-control" aria-label="..." placeholder="Search for...">
+                <input type="text" id="search_bar" name="search_bar" class="form-control" aria-label="..." placeholder="Search for...">
                 <span class="input-group-btn">
                   <button id="search_button" class="btn btn-default" type="button">Go!</button>
                 </span>
@@ -73,10 +73,10 @@
         
         <div class="col-md-13">
             <div class="btn-group btn-group-justified mtb20" role="group">
-                <div class="btn btn-default active_on_click" role="button" >All</div>
-                <div class="active_on_click btn btn-default" role="button" >Healthfinder</div>
-                <div class="active_on_click btn btn-default" role="button" >Medline+</div>
-                <div class="active_on_click btn btn-default" role="button" >Bing</div>
+                <div id="all_filter" class="btn btn-default active_on_click" role="button" >All</div>
+                <div id="healthfinder_filter" class="active_on_click btn btn-default" role="button" >Healthfinder</div>
+                <div id="medlineplus_filter" class="active_on_click btn btn-default" role="button" >MedlinePlus</div>
+                <div id="bing_filter" class="active_on_click btn btn-default" role="button" >Bing</div>
             </div>
         </div>
         <!-- I tried using tables.. didnt work out well(text was selectable)
@@ -116,7 +116,7 @@
                 </tr>
                 <tr>
                   <td class="noborder">
-                  <p class="list-group-item-text">Source: Medline+</p>
+                  <p class="list-group-item-text">Source: MedlinePlus</p>
                   </td>
                 </tr>
               </tbody>
@@ -124,19 +124,19 @@
           </a>
           
           -->
-          
-          <a href="#" class="list-group-item  mtb20 table table-responsive">
-                <h4 class="list-group-item-heading mtb15">Title</h4>
-                <p class="list-group-item-text mtb10">Summary</p>
-                <p class="list-group-item-text mtb10">Source: Bing</p>
-          </a>
-          
-          <a href="#" class="list-group-item  mtb20 table table-responsive">
-                <h4 class="list-group-item-heading mtb15">Title</h4>
-                <p class="list-group-item-text mtb10">Summary</p>
-                <p class="list-group-item-text mtb10">Source: Bing</p>
-          </a>
-          
+          <div id = "search_results" class = "col-md-12">
+            <a href="#" class="list-group-item  mtb20 table table-responsive Healthfinder">
+                  <h4 class="list-group-item-heading mtb15">Title</h4>
+                  <p class="list-group-item-text mtb10">Summary</p>
+                  <p class="list-group-item-text mtb10">Source: Healthfinder</p>
+            </a>
+            
+            <a href="#" class="list-group-item  mtb20 table table-responsive MedlinePlus">
+                  <h4 class="list-group-item-heading mtb15">Title</h4>
+                  <p class="list-group-item-text mtb10">Summary</p>
+                  <p class="list-group-item-text mtb10">Source: MedlinePlus</p>
+            </a>
+          </div>
         </div>
         
     </div>
@@ -167,7 +167,7 @@
               </div>
               <div class="modal-body">
                 {% csrf_token %} 
-                <input type="folder" class="form-control" name="new_folder_name" placeholder="Folder name">
+                <input type="folder" class="form-control" id="new_folder_name" name="new_folder_name" placeholder="Folder name">
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

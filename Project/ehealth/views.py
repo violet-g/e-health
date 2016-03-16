@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
-
+import json
 
 
 def index(request):
@@ -98,10 +98,36 @@ def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
         query=request.POST['query']
-
-        res = bing_query(cat + " " + query)
-
-        data={'query':query,'category':cat, "result":res}
+        if str(cat).strip() == "All":
+            cat=""
+        query=str(query).strip()
+        if str(cat).strip() == "Users":
+            #handle user searching
+            users=[]
+            for searcher in Searcher.objects.all():
+                user={}
+                if not searcher.user.is_superuser:
+                    user["username"]=searcher.user.username
+                    user["first_name"]=searcher.user.first_name
+                    user["last_name"]=searcher.user.last_name
+                    user["email"] = searcher.user.email
+                    if(query in user["username"] or             #is the query in the username
+                        query in user["email"].split("@")[0] or #is it at the beginning of the email
+                        query==user["email"]):                  #or is it the whole email
+                        
+                        users.append(user)
+            return JsonResponse({'query':query,'category':cat,"users":users})
+            
+        
+        bing_res = bing_query(cat + " " + query)
+        # mp_res = medlineplus_query(cat + " " + query)
+        # hf_res = healthfinder_query(cat + " " + query)
+        
+        data={'query':query,'category':cat, "bing_result":bing_res}
+        
+        # data={'query':query,'category':cat, "bing_result":bing_res, 
+        #     "medlineplus_result":mp_res, "healthfinder_result":hf_res}
+            
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
