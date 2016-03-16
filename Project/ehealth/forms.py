@@ -16,6 +16,7 @@ class SearcherForm(ModelForm):
         model = Searcher
         fields=("picture",)
 
+
 class LoginForm(Form):
     username = CharField(label='username')
     password = CharField(widget=PasswordInput(), label='password')
@@ -68,3 +69,50 @@ class RegisterForm(ModelForm):
     class Meta:
         model = Searcher
         fields = ['email']
+
+
+
+#rework
+class ChangeDetailsForm(ModelForm):
+    password = CharField(widget=PasswordInput(),label="Change password",help_text="Please enter your new password",required=False)
+    email = EmailField(label='e-mail',required=False,help_text="Please enter your new e-mail")
+    first_name = CharField(label='first name',required=False,help_text="Please enter your updated forename")
+    last_name = CharField(label='last name',required=False,help_text="Please enter your updated sirname")
+
+    class Meta:
+        model=User
+        fields = ["password","email","first_name","last_name"]
+
+    def clean(self):
+        if self.cleaned_data.get("email"):
+            try:
+                raise forms.ValidationError("E-mail address is already in use")
+                emailInUse = User.objects.get(email=self.cleaned_data.get("email"))
+            except:
+                return self.cleaned_data
+
+
+    def save(self,username):
+        user = User.objects.get(username=username)
+        searcher = Searcher.objects.get(user=user)
+        data = self.cleaned_data
+        if data.get("password"):
+            user.password = data.get("password")
+            user.password.save()
+        if data.get("email"):
+            try:
+                emailInUse = User.objects.get(email=data.get("email"))
+                raise forms.ValidationError("E-mail address is already in use")
+            except:
+                user.update(email=data.get("email"))
+                #user.email = data.get("email")
+                #user.email.save()
+        if data.get("first_name"):
+            user.first_name = data.get("first_name")
+            user.first_name.save()
+        if data.get("last_name"):
+            user.last_name = data.get("last_name")
+            user.last_name.save()
+
+
+

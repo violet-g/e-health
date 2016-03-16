@@ -67,9 +67,15 @@ class FolderPage(models.Model):
     page = models.ForeignKey(Page,on_delete=models.CASCADE)
     #WHAT ELSE DO WE NEED TO KNOW
 
+    def __unicode__(self):
+        return self.page.__unicode__()
+
 class PageCategory(models.Model):
     page = models.ForeignKey(Page,on_delete=models.CASCADE)
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
+
+
+
 
 class QueryCategory(models.Model):
     query = models.ForeignKey(Query,on_delete=models.CASCADE)
