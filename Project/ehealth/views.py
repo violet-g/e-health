@@ -186,16 +186,16 @@ def add_page_ajax(request):
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
-        
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
         page.times_saved += 1
         page.save()
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
-        fp = FolderPage(page=page,folder=folder)
+        fp = FolderPage.objects.get_or_create(page=page,folder=folder)
         fp.save()
-    return JsonResponse({"success":True})
+        return JsonResponse({"success":True})
+    return JsonResponse({"success":False})
 
 
 def test_ajax(request):
