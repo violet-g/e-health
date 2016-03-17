@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
+from django.db.models import Count
 import json
 
 
@@ -63,49 +64,84 @@ def dashboard(request):
     except:
         return HttpResponseRedirect("/ehealth/")
         #return HttpResponse("something went wrong")
+    try:
+        Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        print Page.objects.annotate(Count("folders")).order_by("-folders__count")
+    except:
+        print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
 
 
 
 #on all except statements needs to redirect to dashboard
 def profile(request,username):
-    ownProfile = True
-    context_dict={}
-    update_form = ChangeDetailsForm()
-    context_dict["update_form"] = update_form
-    try:
-        user = User.objects.get(username=username)
-        searcher = Searcher.objects.get(user=user)
-        context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
-    except:
-        return HttpResponse("User does not exist")
-    try:
-        SessionUserID = request.user
-        SessionUser=User.objects.get(username=SessionUserID)
-        SessionSearcher=Searcher.objects.get(user=SessionUser)
-    except:
-        SessionSearcher=""
-    try:
-        folders = Folder.objects.filter(user=searcher)
-    except:
-        return HttpResponse("Cant get folders")
-    foldersToParse = []
-    try:
-        for folder in folders:
-            element = [folder,FolderPage.objects.filter(folder=folder)]
-            foldersToParse.append(element)
-            context_dict["folders"] = foldersToParse
-    except:
-        return HttpResponse("Cant get pages")
-    if searcher == SessionSearcher:
+    if request.method=="POST":
+        form = ChangeDetailsForm(request.POST)
+        if form.is_valid():
+            errors = []
+            user = request.user
+            user=User.objects.get(username=user)
+            if request.POST["password"] and request.POST["password_retype"]:
+                if request.POST["password"] == request.POST["password_retype"]:
+                    user.set_password(request.POST["password"])
+                else:
+                    errors += ["Passwords don't match"]
+            elif (request.POST["password"] and not request.POST["password_retype"]) or (request.POST["password_retype"] and not request.POST["password"]):
+                errors += ["You need to enter your password in both password fields"]
+            if request.POST["email"]:
+                try:
+                    User.objects.get(email=request.POST["email"])
+                    errors += ["Email is already in use"]
+                except:
+                    user.email = request.POST["email"]
+            if request.POST["first_name"]:
+                user.first_name = request.POST["first_name"]
+            if request.POST["last_name"]:
+                user.last_name = request.POST["last_name"]
+            if errors == []:
+                user.save()
+                return HttpResponseRedirect("/ehealth/dashboard/")
+            else:
+                context_dict = getProfileInformation(username,request)
+                context_dict["errors"] = errors
+            #if form.errors:
+            #    context_dict["errors"] = form.errors
+            #    print form.errors
+                return render(request, 'ehealth/profile.html',context_dict)
+    elif request.method=="GET":
+        context_dict = getProfileInformation(username,request)
+        #update_form = ChangeDetailsForm()
+        #context_dict["update_form"] = update_form
+        return render(request,"ehealth/profile.html",context_dict)
+    #    except:
+           # return HttpResponse("Fail")
+    #        return HttpResponseRedirect("/ehealth/")
+
+def getProfileInformation(username,request):
         ownProfile = True
-    else:
-        ownProfile = False
-    context_dict["ownProfile"] = ownProfile
-    return render(request,"ehealth/profile.html",context_dict)
-#    except:
-       # return HttpResponse("Fail")
-#        return HttpResponseRedirect("/ehealth/")
+        context_dict={}
+        update_form = ChangeDetailsForm()
+        context_dict["update_form"] = update_form
+        try:
+            user = User.objects.get(username=username)
+            searcher = Searcher.objects.get(user=user)
+            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
+        except:
+            return HttpResponse("User does not exist")
+        try:
+            SessionUserID = request.user
+            SessionUser=User.objects.get(username=SessionUserID)
+            SessionSearcher=Searcher.objects.get(user=SessionUser)
+        except:
+            SessionSearcher=""
+        if searcher == SessionSearcher:
+            ownProfile = True
+        else:
+            ownProfile = False
+        context_dict["ownProfile"] = ownProfile
+        return context_dict
+
+
 
 @login_required()
 def update_profile(request):
@@ -144,6 +180,22 @@ def update_profile(request):
             })
             
         
+def add_page_ajax(request):
+    if request.method=="POST" and request.is_ajax():
+        try:
+            page = Page.objects.get(url=request.POST["link"])
+        except:
+            page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
+        
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        page.times_saved += 1
+        page.save()
+        folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
+        fp = FolderPage(page=page,folder=folder)
+        fp.save()
+    return JsonResponse({"success":True})
 
 
 def test_ajax(request):

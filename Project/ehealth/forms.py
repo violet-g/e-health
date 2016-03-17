@@ -27,9 +27,11 @@ class LoginForm(forms.Form):
         username = self.cleaned_data.get('username')
         try:
             user = User.objects.get(username=username)
+            goodUser = True
         except:
+            goodUser = False
+        if goodUser == False:
             raise forms.ValidationError('Username doesn\'t exist', code='not_exist')
-
         password = self.cleaned_data.get('password')
         if check_password(password,user.password) == False: #password != user.password:
             raise forms.ValidationError('Wrong password', code='wrong_password')
@@ -84,26 +86,28 @@ class ChangeDetailsForm(forms.Form):
     first_name = forms.CharField(label='first name',required=False,help_text="Please enter your updated forename")
     last_name = forms.CharField(label='last name',required=False,help_text="Please enter your updated sirname")
 
-    def clean(self):
-        # if self.cleaned_data.get("email"):
-            # if User.objects.filter(email=self.cleaned_data.get("email")).exists():
-            #     raise forms.ValidationError("E-mail is already in use")
-        try:
-            emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
-        except:
-            emailTaken = None
-        if emailTaken:
-            raise forms.ValidationError("email is already in use")    
-            
-        
-        if self.cleaned_data.get("password"):
-            if self.cleaned_data.get("password") != self.cleaned_data.get("password_retype"):
-                raise forms.ValidationError("Passwords don't match", code='not_match')
-            try:
-                pass
-            except:
-                raise forms.ValidationError("Please enter password in both fields")
+#    def clean(self):
+#        try:
+#            emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
+#        except:
+#            emailTaken = None
+#        if emailTaken:
+#            raise forms.ValidationError("email is already in use")
+
+
+#        if self.cleaned_data.get("password"):
+#            if self.cleaned_data.get("password") != self.cleaned_data.get("password_retype"):
+#                raise forms.ValidationError("Passwords don't match", code='not_match')
+#            try:
+#                pass
+#            except:
+#                raise forms.ValidationError("Please enter password in both fields")
+
+#       return self.cleaned_data
+
+
+
+
         #password = self.cleaned_data.get('password')
         #if check_password(password,user.password) == False: #password != user.password:
         #    raise forms.ValidationError('Wrong password', code='wrong_password')
-        return self.cleaned_data
