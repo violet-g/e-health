@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <title>This is a secure website. Please keep it that way...</title>
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load bootstrap %}
 
-
-
-    <title></title>
-</head>
-
-
-<body>
+{% block content %}
     {% if ViewedUser %}
         {% for element in ViewedUser %}<br />
             {{ element }}<br />
@@ -42,18 +30,10 @@
  {% if message %}
      {{ message }}
  {% endif %}
- <form id="update_form" method="post" action="/ehealth/updateProfile/">
-            {%  csrf_token %}
-            {% for hidden in update_form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            {% for field in update_form.visible_fields %}
-                {{ field.errors }}
-                {{ field.help_text }}
-                {{ field }}
-                <br />
-            {% endfor %}
-            <input type="submit" name="submit" value="Change Details" />
+            <form action="/ehealth/updateProfile/" method="post">
+                {% csrf_token %}
+                {{ update_form | bootstrap }}
+                <input class="btn btn-warning" type="submit" value="Register">
             </form>
-</body>
-</html>
+
+{% endblock %}
