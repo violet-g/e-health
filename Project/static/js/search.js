@@ -3,7 +3,6 @@
 //     <p class="list-group-item-text mtb10">Summary</p>
 //     <p class="list-group-item-text mtb10">Source: Bing</p>
 // </a>
-var link_a,title_h4,summary_p,source_p,search_result;
 
 
 $(document).ready(function(){
@@ -36,6 +35,8 @@ $(document).ready(function(){
 
             // handle a successful response
             success : function(data) {
+                var link_a,title_h4,summary_p,source_p,search_result;
+                
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // location.reload();

@@ -7,9 +7,12 @@ $(document).ready(function(){
             return;
         }
         console.log(folder);
+        var delete_button = "<button id='delete' type='button' class='btn btn-primary btn-danger'>Delete</button>"
+        
         $("#modal_header").append("<h4 id='added_title'> Are you sure you want to delete this folder?</h4>");
         // $("#modal_body").append("<ul class='nav nav-pills' role='tablist'><li id='added_body' class='active' role='presentation'><a href='#'>" + folder + "</a></li></ul>");
         $("#modal_body").append("<ul class='nav nav-pills' role='tablist'><li id='added_body' class='active' role='presentation'><a href='#'>" + folder + "</a></li></ul>");
+        $("#modal_close_button").after($(delete_button));
         $("#myModal").modal('show');
         $("#delete").click(function(){
             $.ajax({
@@ -31,11 +34,6 @@ $(document).ready(function(){
                     console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
                 }
             });
-        });
-        //on hide remove the added element to the modal, since we dont need it anymore
-        $('#myModal').on('hide.bs.modal',function(){
-            $("#added_title").remove();
-            $("#added_body").remove();
         });
     });
 })

@@ -22,7 +22,7 @@
               
               {% if folders %}
               {% for folder in folders %}
-                <li role="presentation" class="btn-block folder"><a class="nofocus" href="#" >{{folder.name}}</a></li>
+                <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
               {% endfor %}
               {% endif %}
                 <li role="presentation" class="btn-block"><a class="nofocus" href="#">Folder 2</a></li>
@@ -151,8 +151,7 @@
               <div class="modal-body" id="modal_body">
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="delete" type="button" class="btn btn-primary btn-danger">Delete</button>
+                <button id="modal_close_button" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
@@ -185,7 +184,9 @@
 <script src="{% static "js/dashboard.js" %}"></script>
 <script src="{% static "js/buttons.js" %}"></script>
 <script src="{% static "js/modal.js" %}"></script>
+<script src="{% static "js/empty_modal.js" %}"></script>
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/new_folder_modal.js" %}"></script>
+<script src="{% static "js/show_folder_content.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 {% endblock %}

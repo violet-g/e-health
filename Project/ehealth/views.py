@@ -130,7 +130,25 @@ def search_ajax(request):
             
         return JsonResponse(data)
     return render(request, 'dashboard.html')
-
+    
+def checkout_folder_ajax(request):
+    if request.method == 'POST' and request.is_ajax():
+        folder=request.POST['folder']
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        pages=[]
+        for f in searcher.folders.all():
+            print f, folder
+            if f.name == folder.strip():
+                print "HUI"
+                # print f.pages.all()
+                for p in f.pages.all():
+                    # print p.serialise()
+                    pages.append(p.serialise())
+        # print "pages", json.dumps(pages[0])
+        return JsonResponse({"folder":folder,"pages":pages})
+        # return JsonResponse({"folder":folder,"pages":[]})
 #def search()
 
 #
