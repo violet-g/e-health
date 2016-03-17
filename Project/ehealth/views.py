@@ -18,7 +18,6 @@ def index(request):
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
                 register(request.POST)
-                #register_form.save(commit=True)
                 return HttpResponseRedirect("dashboard/")
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
@@ -29,7 +28,6 @@ def index(request):
                 user = authenticate(username=username,password=password)
                 login(request,user)
                 return HttpResponseRedirect("dashboard/")
-                #return HttpResponse('successfully logged in')
         else:
             return HttpResponse('Unknown error occurred.')
     else:
@@ -46,9 +44,6 @@ def register(request):
                                        password = request.POST["password"],first_name=request.POST["first_name"],last_name=request.POST["last_name"] )
     newuser.save()
     newSearcher = Searcher(user = User.objects.get(username=request.POST["username"]))
-    #if request.FILES["picture"]:
-    #    newSearcher.picture =
-            #newSearcher.picture = self.cleaned_data.get("picture")
     newSearcher.save()
 
 
