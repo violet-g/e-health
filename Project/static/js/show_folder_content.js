@@ -21,6 +21,10 @@ $(".folder").dblclick(function(){
             {
                 var link_a,title_h4,summary_p,source_p,search_result;
                 var pages = data["pages"]
+                
+                var delete_page = "<button id='delete_page' type='button' class='btn btn-primary btn-danger mtb20'>Delete</button>"
+                
+                
                 for(var p in pages)
                 {
                     console.log(pages[p]);
@@ -28,19 +32,26 @@ $(".folder").dblclick(function(){
                     console.log(pages[p]['summary']);
                     console.log(pages[p]['source']);
                     // $("#modal_body").append("<p>" + "</p>");
+                    var cont = "<div class='row'>";
                     
-                    link_a = "<a href='#' target='_blank' class='list-group-item  mtb20 table table-responsive '>"
-                    title_h4= "<h4 class='list-group-item-heading mtb15'>"
-                    summary_p = "<p class='list-group-item-text mtb10'>"
-                    source_p = "<p class='list-group-item-text mtb10'>"
+                    link_a = "<a href='#' target='_blank' class='list-group-item table table-responsive '>";
+                    title_h4= "<h4 class='list-group-item-heading mtb15'>";
+                    
+                    summary_p = "<p class='list-group-item-text mtb10'>";
+                    source_p = "<p class='list-group-item-text mtb10'>";
                     
                     link_a = link_a.replace("#",pages[p]['url']);
                     title_h4 += pages[p]['title'] + "</h4>";
                     summary_p += pages[p]['summary'] + "</p>";
-                    source_p += "Source: %s"%(pages[p]['source']) + "</p>"
+                    source_p += "Source: %s"%(pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
-                    $("#modal_body").append(link_a);
+                    
+                    cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + delete_page + "</div>";
+                    
+                    $("#modal_body").append(cont);
                 }
+                
+                
             }
             $("#myModal").modal('show');
             

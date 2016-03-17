@@ -10,6 +10,7 @@ $(document).ready(function(){
         $("#category").text($(this).text());
     });
     
+    
     $("#all_filter").click(function(){
         $(".showing").removeClass("showing");
         $(this).addClass("showing");

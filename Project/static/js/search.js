@@ -35,16 +35,15 @@ $(document).ready(function(){
 
             // handle a successful response
             success : function(data) {
-                var link_a,title_h4,summary_p,source_p,search_result;
+                var link_a,title_h4,summary_p,source_p,search_result,username_h4,names_p,email_p;
                               
                 
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // location.reload();
-                console.log(add_to_folder);
                 if(data["users"])  //format: list of dictionaries
                 {
-                    users=data["users"];
+                    var users=data["users"];
                     // for(var i in users)
                     //     console.log(i);
                     // console.log("maina"+data["users"]);
@@ -95,18 +94,34 @@ $(document).ready(function(){
                     if(len<sources[i].length)
                         len=sources[i].length;
                 // sources={"MedlinePlus":medlineplus,"Healthfinder":healthfinder,"Bing":bing};
-                var add_to_folder = "<div class='btn-group col-md-2 mtb20 pull-right'>" +
-                                      "<button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                                        "Action" +
+                // var add_to_folder = "<div class='btn-group col-md-2 mtb20 pull-right'>" +
+                //                       "<button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                //                         "Action" +
+                //                       "</button>" +
+                //                       "<ul class='dropdown-menu'>" +
+                //                         "<li><a href='#'>Action</a></li>" +
+                //                         "<li><a href='#'>Another action</a></li>" +
+                //                         "<li><a href='#'>Something else here</a></li>" +
+                //                         "<li role='separator' class='divider'></li>" +
+                //                         "<li><a href='#'>Separated link</a></li>" +
+                //                       "</ul>" +
+                //                     "</div>";
+                
+                var add_to_folder = "<div class='col-md-3 mtb20 pull-right'>" +
+                                      "<button id='add_to_folder' type='button' class='btn btn-block btn-success'>" +
+                                        "Add folder" +
                                       "</button>" +
-                                      "<ul class='dropdown-menu'>" +
-                                        "<li><a href='#'>Action</a></li>" +
-                                        "<li><a href='#'>Another action</a></li>" +
-                                        "<li><a href='#'>Something else here</a></li>" +
-                                        "<li role='separator' class='divider'></li>" +
-                                        "<li><a href='#'>Separated link</a></li>" +
-                                      "</ul>" +
-                                    "</div>"
+                                      "<button id='choose_folder' type='button' class='btn btn-block btn-default dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                                        "Choose folder" +
+                                      "</button>" +
+                                      "<ul class='dropdown-menu'>"
+                
+                
+                var items;
+                $(".folder").each(function(){
+                    add_to_folder+= "<li class='folder_choice'><a href='#!'>" + $(this).text() + "</a></li>";
+                });
+                add_to_folder+="</ul>" + "</div>";
                 
                 
                 for(var i=0;i<len; i++)
@@ -116,12 +131,12 @@ $(document).ready(function(){
                         if(sources[s].length<i)
                             continue;
                      
-                        cont = "<div class='row'>"       
+                        var cont = "<div class='row'>"       
                         
-                        link_a = "<a href='#' target='_blank' class='list-group-item table table-responsive "+s+ "'>"
-                        title_h4= "<h4 class='list-group-item-heading mtb15'>"
-                        summary_p = "<p class='list-group-item-text mtb10'>"
-                        source_p = "<p class='list-group-item-text mtb10'>"
+                        link_a = "<a id='link' href='#' target='_blank' class='list-group-item table table-responsive "+s+ "'>"
+                        title_h4= "<h4 id='title' class='list-group-item-heading mtb15'>"
+                        summary_p = "<p id='summary' class='list-group-item-text mtb10'>"
+                        source_p = "<p id='source' class='list-group-item-text mtb10'>"
 
                         link_a = link_a.replace("#",sources[s][i]['link']);
                         title_h4 += sources[s][i]['title'] + "</h4>";
@@ -129,7 +144,7 @@ $(document).ready(function(){
                         source_p += "Source: Bing" + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
                         
-                        cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"
+                        cont+= "<div class='col-md-9 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"
                         // $("#search_results").append(link_a);
                         // $("#search_results").append(add_to_folder);
                         $("#search_results").append(cont);
@@ -138,6 +153,47 @@ $(document).ready(function(){
                     }
                 };
                 $(".showing").trigger('click');
+                $(".folder_choice").click(function(){
+                    $("#choose_folder").text($(this).text());
+                });
+                $("#add_to_folder").click(function(){
+                    // console.log($(this).text());
+                    // console.log($(this).parent().parent().children().text());
+                    var folder = $("#choose_folder").text();
+                    var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
+                    var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
+                    var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
+                    var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
+                    if($.trim(folder)=="Choose folder")
+                        return
+                    
+                    $.ajax({
+                            url : '/ehealth/add_page_ajax/', // the endpoint,commonly same url
+                            type : "POST", // http method
+                            data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                                    folder:folder,
+                                    link:link,
+                                    title:title,
+                                    summary:summary,
+                                    source:source,
+                                    }, // data sent with the post request
+
+                            // handle a successful response
+                            success : function(data) {
+                                console.log(data);
+                            },
+                            // handle a non-successful response
+                            error : function(xhr,errmsg,err) {
+                                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                            }
+                    })
+                    
+                    
+                    // console.log($(this).parent().parent().parent())
+                    // var txt=$(this).text().substr(0,15);
+                    // if(txt.length < $(this).text().length)
+                    //     txt+="..."
+                });
             },
 
             // handle a non-successful response
@@ -151,6 +207,7 @@ $(document).ready(function(){
         if (event.which == 13) {
             $("#search_button").trigger('click');
         }
-    })
-
+    });
+    
+    
 })
