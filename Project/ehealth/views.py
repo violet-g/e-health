@@ -66,7 +66,7 @@ def dashboard(request):
         #return HttpResponse("something went wrong")
     try:
         Page.objects.annotate(Count("folders")).order_by("-folders__count")
-        print   Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        print Page.objects.annotate(Count("folders")).order_by("-folders__count")
     except:
         print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
@@ -180,6 +180,17 @@ def update_profile(request):
             })
             
         
+def add_page_ajax(request):
+    if request.emthod=="POST" and request.is_ajax():
+        try:
+            page = Page.objects.get(url=request.POST["link"])
+        except:
+            page = Page(title=request.POST["title"],souce=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
+        folder = Folder.objects.get(name=request.POST["folder"],user=Searcher.objects.get(username=request.POST["user"]))
+        fp = FolderPage(page=page,folder=folder)
+        page.times_saved += 1
+        page.save()
+        fp.save()
 
 
 def test_ajax(request):
