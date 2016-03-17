@@ -36,20 +36,22 @@ $(document).ready(function(){
             // handle a successful response
             success : function(data) {
                 var link_a,title_h4,summary_p,source_p,search_result;
+                              
                 
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // location.reload();
-                
+                console.log(add_to_folder);
                 if(data["users"])  //format: list of dictionaries
                 {
                     users=data["users"];
                     // for(var i in users)
                     //     console.log(i);
                     // console.log("maina"+data["users"]);
+                    
                     for(var i=0; i<users.length;i++)
                     {
-                        link_a = "<a href='#' target='_blank' class='list-group-item  mtb20 table table-responsive'>"
+                        link_a = "<a href='#' target='_blank' class='list-group-item table table-responsive'>"
                         username_h4= "<h4 class='list-group-item-heading mtb15'>"
                         names_p = "<p class='list-group-item-text mtb10'>"
                         email_p = "<p class='list-group-item-text mtb10'>"
@@ -93,15 +95,30 @@ $(document).ready(function(){
                     if(len<sources[i].length)
                         len=sources[i].length;
                 // sources={"MedlinePlus":medlineplus,"Healthfinder":healthfinder,"Bing":bing};
+                var add_to_folder = "<div class='btn-group col-md-2 mtb20 pull-right'>" +
+                                      "<button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                                        "Action" +
+                                      "</button>" +
+                                      "<ul class='dropdown-menu'>" +
+                                        "<li><a href='#'>Action</a></li>" +
+                                        "<li><a href='#'>Another action</a></li>" +
+                                        "<li><a href='#'>Something else here</a></li>" +
+                                        "<li role='separator' class='divider'></li>" +
+                                        "<li><a href='#'>Separated link</a></li>" +
+                                      "</ul>" +
+                                    "</div>"
+                
+                
                 for(var i=0;i<len; i++)
                 {
                     for(var s in sources)
                     {
                         if(sources[s].length<i)
                             continue;
-                            
-                        //s is the value of the key in the Dictionary AND the class added in the htm
-                        link_a = "<a href='#' target='_blank' class='list-group-item  mtb20 table table-responsive "+s+ "'>"
+                     
+                        cont = "<div class='row'>"       
+                        
+                        link_a = "<a href='#' target='_blank' class='list-group-item table table-responsive "+s+ "'>"
                         title_h4= "<h4 class='list-group-item-heading mtb15'>"
                         summary_p = "<p class='list-group-item-text mtb10'>"
                         source_p = "<p class='list-group-item-text mtb10'>"
@@ -111,7 +128,12 @@ $(document).ready(function(){
                         summary_p += sources[s][i]['summary'] + "</p>";
                         source_p += "Source: Bing" + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
-                        $("#search_results").append(link_a);
+                        
+                        cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"
+                        // $("#search_results").append(link_a);
+                        // $("#search_results").append(add_to_folder);
+                        $("#search_results").append(cont);
+                        // $("#search_results").append(add_to_folder);
                         
                     }
                 };
