@@ -65,8 +65,9 @@ def dashboard(request):
         return HttpResponseRedirect("/ehealth/")
         #return HttpResponse("something went wrong")
     try:
-        Page.objects.annotate(Count("folders")).order_by("-folders__count")
-        print Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        Page.objects.order_by("times_saved")
+        #Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        print Page.objects.order_by("times_saved")
     except:
         print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
@@ -192,8 +193,12 @@ def add_page_ajax(request):
         page.times_saved += 1
         page.save()
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
-        fp = FolderPage.objects.get_or_create(page=page,folder=folder)
-        fp.save()
+        try:
+            fp = FolderPage.objects.get(page=page,folder=folder)
+            page.times_saved -= 1
+        except:
+            fp = FolderPage.objects.get_or_create(page=page,folder=folder)
+            fp.save()
         return JsonResponse({"success":True})
     return JsonResponse({"success":False})
 
