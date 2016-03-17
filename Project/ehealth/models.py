@@ -14,6 +14,31 @@ class Category(models.Model):
 #    email = models.EmailField(max_length = 50)
 
 
+class Query(models.Model):
+    content = models.TextField()
+    category = models.ManyToManyField(Category, through='QueryCategory')
+
+
+class Searcher(models.Model):
+    user = models.OneToOneField(User)
+    website = models.URLField(blank=True)
+    picture = models.ImageField(upload_to='profile_images', blank=True)
+    history = models.ManyToManyField(Query, through='UserHistory')
+    #WHAT ELSE DO WE NEED
+
+    def __unicode__(self):
+        return self.user.username
+
+
+class Folder(models.Model):
+        user = models.ForeignKey(Searcher, related_name="folders")
+        name = models.CharField(max_length=128, unique=False)
+        #pages = models.ManyToManyField(Page,through='FolderPage')
+        public = models.BooleanField(default=False)
+        #WHAT ELSE DO WE NEED
+
+        def __unicode__(self):
+               return self.name
 
 class Page(models.Model):
     title = models.CharField(max_length=128)
@@ -24,6 +49,7 @@ class Page(models.Model):
     sentiment_score = models.IntegerField()
     subjectivity_score = models.IntegerField()
     times_saved = models.BigIntegerField()
+    folders = models.ManyToManyField(Folder,through=("FolderPage"))
     category = models.ManyToManyField(Category, through='PageCategory')
    #WHAT ELSE DO WE NEED
 
@@ -43,30 +69,7 @@ class Page(models.Model):
         return self.title
 
 
-class Query(models.Model):
-    content = models.TextField()
-    category = models.ManyToManyField(Category, through='QueryCategory')
 
-class Searcher(models.Model):
-    user = models.OneToOneField(User)
-    website = models.URLField(blank=True)
-    picture = models.ImageField(upload_to='profile_images', blank=True)
-    history = models.ManyToManyField(Query, through='UserHistory')
-    #WHAT ELSE DO WE NEED
-
-    def __unicode__(self):
-        return self.user.username
-
-
-class Folder(models.Model):
-        user = models.ForeignKey(Searcher, related_name="folders")
-        name = models.CharField(max_length=128, unique=False)
-        pages = models.ManyToManyField(Page,through='FolderPage')
-        public = models.BooleanField(default=False)
-        #WHAT ELSE DO WE NEED
-
-        def __unicode__(self):
-               return self.name
 
 class UserHistory(models.Model):
     user = models.ForeignKey(Searcher,on_delete=models.CASCADE)

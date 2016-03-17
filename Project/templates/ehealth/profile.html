@@ -30,7 +30,25 @@
  {% if message %}
      {{ message }}
  {% endif %}
-            <form action="/ehealth/updateProfile/" method="post">
+
+{% comment %}
+    {% if errors %}
+        <div class="error">
+        <p>Errors</p>
+        <ul>
+            {% for key,value in errors.items %}
+                {% for error in value %}
+                    <li>{{error}}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+        </div>
+{% endcomment %}
+    {% if errors %}{% for error in errors %}{{ error }}{% endfor %}{% endif %}
+
+
+            <form action="/ehealth/profile/{{ user }}/" method="post">
                 {% csrf_token %}
                 {{ update_form | bootstrap }}
                 <input class="btn btn-warning" type="submit" value="Register">
