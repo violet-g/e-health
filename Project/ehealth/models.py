@@ -60,7 +60,7 @@ class Page(models.Model):
 class Folder(models.Model):
         user = models.ForeignKey(Searcher, related_name="folders")
         name = models.CharField(max_length=128, unique=False)
-        pages = models.ManyToManyField(Page,through='FolderPage')
+        pages = models.ManyToManyField(Page,through='FolderPage',related_name="folders")
         public = models.BooleanField(default=False)
         #WHAT ELSE DO WE NEED
 

@@ -14,5 +14,6 @@ urlpatterns = patterns('',
         url(r"^add_page_ajax/$",views.add_page_ajax,name="add_page_ajax"),
         url(r'^new_folder_ajax/$', views.new_folder_ajax, name='new_folder_ajax'),
         url(r'^delete_folder_ajax/$', views.delete_folder_ajax, name='delete_folder_ajax'),
+        url(r'^delete_page_ajax/$', views.delete_page_ajax, name='delete_page_ajax'),
         url(r'^checkout_folder_ajax/$', views.checkout_folder_ajax, name='checkout_folder_ajax'),
         )
