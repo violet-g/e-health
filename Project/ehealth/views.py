@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
+from ehealth.healthfinder_search import healthfinder_query
+from ehealth.MedlinePlus_search import medlinePlus_query
 
 
 
@@ -100,6 +102,10 @@ def search_ajax(request):
         query=request.POST['query']
 
         res = bing_query(cat + " " + query)
+
+        res.extend(healthfinder_query(cat + " " + query))
+
+        res.extend(medlinePlus_query(cat + " " + query))
 
         data={'query':query,'category':cat, "result":res}
         return JsonResponse(data)
