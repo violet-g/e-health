@@ -126,7 +126,6 @@ def getProfileInformation(username,request):
         try:
             user = User.objects.get(username=username)
             searcher = Searcher.objects.get(user=user)
-            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
         except:
             return HttpResponse("User does not exist")
         try:
@@ -145,6 +144,9 @@ def getProfileInformation(username,request):
         elif ownProfile==False:
             folders = Folder.objects.filter(user=searcher,public=True)
         context_dict["folders"] = folders
+        searcher_public = searcher.public
+        if searcher.public == True or ownProfile==True:
+            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
         return context_dict
 
 

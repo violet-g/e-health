@@ -23,6 +23,7 @@ class Searcher(models.Model):
     user = models.OneToOneField(User)
     website = models.URLField(blank=True)
     picture = models.ImageField(upload_to='profile_images', blank=True)
+    public = models.BooleanField(default=False)
     history = models.ManyToManyField(Query, through='UserHistory')
     #WHAT ELSE DO WE NEED
 
