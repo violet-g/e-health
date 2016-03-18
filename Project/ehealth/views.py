@@ -65,8 +65,9 @@ def dashboard(request):
         return HttpResponseRedirect("/ehealth/")
         #return HttpResponse("something went wrong")
     try:
-        Page.objects.annotate(Count("folders")).order_by("-folders__count")
-        print Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        Page.objects.order_by("times_saved")
+        #Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        print Page.objects.order_by("times_saved")
     except:
         print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
@@ -125,7 +126,6 @@ def getProfileInformation(username,request):
         try:
             user = User.objects.get(username=username)
             searcher = Searcher.objects.get(user=user)
-            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
         except:
             return HttpResponse("User does not exist")
         try:
@@ -139,6 +139,14 @@ def getProfileInformation(username,request):
         else:
             ownProfile = False
         context_dict["ownProfile"] = ownProfile
+        if ownProfile==True:
+            folders = Folder.objects.filter(user=searcher)
+        elif ownProfile==False:
+            folders = Folder.objects.filter(user=searcher,public=True)
+        context_dict["folders"] = folders
+        searcher_public = searcher.public
+        if searcher.public == True or ownProfile==True:
+            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
         return context_dict
 
 
@@ -187,7 +195,6 @@ def add_page_ajax(request):
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
-        
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
@@ -196,9 +203,14 @@ def add_page_ajax(request):
         page.save()
 
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
-        fp = FolderPage(page=page,folder=folder)
-        fp.save()
-    return JsonResponse({"success":True})
+        try:
+            fp = FolderPage.objects.get(page=page,folder=folder)
+            page.times_saved -= 1
+        except:
+            fp = FolderPage.objects.get_or_create(page=page,folder=folder)
+            fp.save()
+        return JsonResponse({"success":True})
+    return JsonResponse({"success":False})
 
 
 def test_ajax(request):

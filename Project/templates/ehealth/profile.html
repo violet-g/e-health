@@ -6,8 +6,9 @@
     {% if ViewedUser %}
         {% for element in ViewedUser %}<br />
             {{ element }}<br />
-
         {% endfor %}
+    {% elif not ViewedUser %}
+        This person does not wish to share their personal information.<br />
     {% endif %}
 
 
@@ -26,6 +27,14 @@
         Not Browsing own profile {{ ownProfile }}
     {% endif %}
 <br />
+
+{% if folders %}
+    {% for folder in folders %}
+        {{ folder }}
+    {% endfor %}
+{% endif %}
+
+
 
  {% if message %}
      {{ message }}
