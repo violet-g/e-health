@@ -27,6 +27,14 @@
     {% endif %}
 <br />
 
+{% if folders %}
+    {% for folder in folders %}
+        {{ folder }}
+    {% endfor %}
+{% endif %}
+
+
+
  {% if message %}
      {{ message }}
  {% endif %}

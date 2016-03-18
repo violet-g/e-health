@@ -140,6 +140,11 @@ def getProfileInformation(username,request):
         else:
             ownProfile = False
         context_dict["ownProfile"] = ownProfile
+        if ownProfile==True:
+            folders = Folder.objects.filter(user=searcher)
+        elif ownProfile==False:
+            folders = Folder.objects.filter(user=searcher,public=True)
+        context_dict["folders"] = folders
         return context_dict
 
 
