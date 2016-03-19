@@ -12,8 +12,10 @@
         </div>
         <div class="col-md-13">
             <div class="btn-group btn-group-justified" role="group">
-                <div class="btn btn-success centered glyphicon glyphicon-plus" role="button"
-                      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>
+                <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
+                <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
+                <div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"
+                      type="button"></div>
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
@@ -25,12 +27,6 @@
                 <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
               {% endfor %}
               {% endif %}
-                <li role="presentation" class="btn-block"><a class="nofocus" href="#">Folder 2</a></li>
-                <li role="presentation" class="btn-block"><a class="nofocus" href="#">Folder 3</a></li>
-                <!-- Button trigger modal -->
-                <li type="button" class="btn-block" data-toggle="modal" data-target="#myModal">
-                  <a href="#">Modal</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -186,6 +182,7 @@
 <script src="{% static "js/empty_modal.js" %}"></script>
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/new_folder_modal.js" %}"></script>
+<script src="{% static "js/create_folder.js" %}"></script>
 <script src="{% static "js/show_folder_content.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 <script src="{% static "js/dashboard.js" %}"></script>

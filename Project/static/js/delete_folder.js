@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $("#delete_folder").click(function(){
+        var folder_object=$(".active.folder");
         var folder = $.trim($(".active.folder").text());
         if(folder=="")
         {
@@ -26,7 +27,9 @@ $(document).ready(function(){
                 success : function(data) {
                     console.log(data); // another sanity check
                     //On success show the data posted to server as a message
-                    location.reload();
+                    // location.reload();
+                    folder_object.remove();
+                    $("#myModal").modal('hide');
                 },
                 
                 // handle a non-successful response

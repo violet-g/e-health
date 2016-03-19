@@ -51,7 +51,7 @@ def bing_query(search_terms):
         response = urllib2.urlopen(search_url).read()
         # Convert the string response to a Python dictionary object.
         json_response = json.loads(response)
-
+        print search_url 
         # Loop through each page returned, populating out results list.
         for result in json_response['d']['results']:
             results.append({
@@ -67,4 +67,4 @@ def bing_query(search_terms):
     # print results
     return results
 
-#run_query("cancer")
+#bing_query("cancer")

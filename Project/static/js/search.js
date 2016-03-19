@@ -74,17 +74,17 @@ $(document).ready(function(){
                 var healthfinder=0;
                 var sources={}
                 //filter the cases of empty answers
-                if (data['bing_result'])
+                if (data['bing_result'] && data['bing_result'].length)
                 {
                     bing=data['bing_result'];
                     sources["Bing"]=bing;
                 }
-                if (data['medlineplus_result'])
+                if (data['medlineplus_result'] && data['medlineplus_result'].length)
                 {
                     medlineplus=data['medlineplus_result'];
                     sources["MedlinePlus"]=medlineplus;
                 }
-                if (data['healthfinder_result'])
+                if (data['healthfinder_result'] && data['healthfinder_result'].length)
                 {
                     healthfinder=data['healthfinder_result'];
                     sources["Healthfinder"]=healthfinder;
@@ -109,7 +109,7 @@ $(document).ready(function(){
                 
                 var add_to_folder = "<div class='col-md-3 mtb20 pull-right'>" +
                                       "<button type='button' class='btn btn-block btn-success add_to_folder_button'>" +
-                                        "Add folder" +
+                                        "Add to folder" +
                                       "</button>" +
                                       "<button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                                         "Choose folder" +
@@ -128,20 +128,20 @@ $(document).ready(function(){
                 {
                     for(var s in sources)
                     {
-                        if(sources[s].length<i)
+                        if(sources[s].length<=i)
                             continue;
                      
-                        var cont = "<div class='row'>"       
+                        var cont = "<div class='row "+ s + "'>"       
                         
-                        link_a = "<a id='link' href='#' target='_blank' class='list-group-item table table-responsive "+s+ "'>"
+                        link_a = "<a id='link' href='#' target='_blank' class='list-group-item table table-responsive'>"
                         title_h4= "<h4 id='title' class='list-group-item-heading mtb15'>"
                         summary_p = "<p id='summary' class='list-group-item-text mtb10'>"
                         source_p = "<p id='source' class='list-group-item-text mtb10'>"
-
+                        
                         link_a = link_a.replace("#",sources[s][i]['link']);
                         title_h4 += sources[s][i]['title'] + "</h4>";
                         summary_p += sources[s][i]['summary'] + "</p>";
-                        source_p += "Source: Bing" + "</p>"
+                        source_p += "Source: "+ s + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
                         
                         cont+= "<div class='col-md-9 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"

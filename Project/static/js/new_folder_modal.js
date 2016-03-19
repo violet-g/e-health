@@ -30,8 +30,15 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // alert('Hi   '+data['name']);
-                $("#new_folder_modal").modal('hide');
-                location.reload();
+                // $("#new_folder_modal").modal('hide');
+                var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
+                                fname +
+                                "</a></li>"
+                // location.reload();
+                $('#myModal').modal('hide');
+                console.log(new_folder);
+                console.log($("#folder_list").text());
+                $("#folder_list").append(new_folder);
             },
             
             // handle a non-successful response
