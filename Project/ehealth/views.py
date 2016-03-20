@@ -14,7 +14,7 @@ from django.utils.encoding import *
 from ehealth.MedlinePlus_search import medlinePlus_query
 from django.db.models import Count
 import json
-
+import urllib2
 
 
 def index(request):
@@ -165,13 +165,10 @@ def add_page_ajax(request):
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
-            try:
-                temp = calculateScores(page.summary)
-                page.readability_score = temp["readability_score"]
-                page.sentiment_score = temp["sentiment_score"]
-                page.subjectivity_score = temp["subjectivity_score"]
-            except:
-                pass
+            temp = calculateScores(page.summary)
+            page.readability_score = temp["readability_score"]
+            page.sentiment_score = temp["sentiment_score"]
+            page.subjectivity_score = temp["subjectivity_score"]
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
@@ -185,7 +182,7 @@ def add_page_ajax(request):
             fp = FolderPage.objects.get(page=page,folder=folder)
             page.times_saved -= 1
         except:
-            fp = FolderPage.objects.get_or_create(page=page,folder=folder)
+            fp = FolderPage.objects.get_or_create(page=page,folder=folder)[0]
             fp.save()
         return JsonResponse({"success":True})
     return JsonResponse({"success":False})
@@ -203,12 +200,12 @@ def new_folder_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-
+        data={'name': fname, "repeat":True}
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        new_folder=Folder(user=searcher, name=fname)
-        new_folder.save()
-
-        data={'name': fname}
+        if not Folder.objects.filter(user=searcher, name=fname):
+            new_folder=Folder(user=searcher, name=fname)
+            new_folder.save()
+            data["repeat"]=False
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
@@ -284,18 +281,30 @@ def search_ajax(request):
         # print hf_res
         # data={'query':query,'category':cat, "bing_result":bing_res}
         for result in bing_res:
-            temp = calculateScores(result["summary"])
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result['summary'])
+            except:
+                continue
+            
             result["readability_score"] = temp["readability_score"]
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
-
         for result in mp_res:
-            temp = calculateScores(result["summary"])
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result["summary"])
+            except:
+                continue
             result["readability_score"] = temp["readability_score"]
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
         for result in hf_res:
-            temp = calculateScores(result["summary"])
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result["summary"])
+            except:
+                continue
             result["readability_score"] = temp["readability_score"]
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
@@ -310,7 +319,7 @@ def search_ajax(request):
 
 def calculateScores(text):
     print text
-    text = unicode(text,errors="replace")
+    text = smart_bytes(text,encoding="utf-8",strings_only=False,errors="replace")
     temp = TextBlob(text)
     toReturn = {}
     toReturn["readability_score"] = textstat.flesch_reading_ease(text)

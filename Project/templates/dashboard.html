@@ -128,7 +128,7 @@
                   <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
                   <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
                     data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
-                  <ul class='dropdown-menu folder_options '>
+                  <ul class='dropdown-menu folder_options btn-block '>
                     {% if folders %}
                     {% for folder in folders %}
                       <li class='folder_choice'><a href='#!'> {{folder.name}} </a></li>
@@ -137,10 +137,10 @@
                   </ul>
                 </div>
                 <div class='col-md-9 mtb20 pull-left'>
-                  <a href="#" class="list-group-item table table-responsive ">
-                      <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
-                      <p class="list-group-item-text mtb10">{{ page.summary }}</p>
-                      <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
+                  <a href="{{page.url}}" target='_blank' class="list-group-item table table-responsive ">
+                  <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
+                  <p class="list-group-item-text mtb10">{{ page.summary }}</p>
+                  <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
                   </a>
                 </div>
               </div>
@@ -167,24 +167,24 @@
           </div>
         </div>
     <!-- new folder modal -->
-    <div class="modal fade" id="new_folder_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Create new folder</h4>
-              </div>
-              <div class="modal-body">
-                {% csrf_token %} 
-                <input type="folder" class="form-control" id="new_folder_name" name="new_folder_name" placeholder="Folder name">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="create" type="button" class="btn btn-success">Create</button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!--<div class="modal fade" id="new_folder_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+    <!--      <div class="modal-dialog" role="document">-->
+    <!--        <div class="modal-content">-->
+    <!--          <div class="modal-header">-->
+    <!--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+    <!--            <h4 class="modal-title" id="myModalLabel">Create new folder</h4>-->
+    <!--          </div>-->
+    <!--          <div class="modal-body">-->
+    <!--            {% csrf_token %} -->
+    <!--            <input type="folder" class="form-control" id="new_folder_name" name="new_folder_name" placeholder="Folder name">-->
+    <!--          </div>-->
+    <!--          <div class="modal-footer">-->
+    <!--            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+    <!--            <button id="create" type="button" class="btn btn-success">Create</button>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
         
     
     
@@ -192,12 +192,12 @@
 <!--<script src="{% static "hello.js" %}"></script> -->
 <!--<script src="{% static "js/headers.js" %}"></script>-->
 <script src="{% static "js/modal.js" %}"></script>
+<script src="{% static "js/buttons.js" %}"></script>
 <script src="{% static "js/empty_modal.js" %}"></script>
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/new_folder_modal.js" %}"></script>
 <script src="{% static "js/show_folder_content.js" %}"></script>
 <script src="{% static "js/create_folder.js" %}"></script>
-<script src="{% static "js/search.js" %}"></script>
 <script src="{% static "js/dashboard.js" %}"></script>
-<script src="{% static "js/buttons.js" %}"></script>
+<script src="{% static "js/search.js" %}"></script>
 {% endblock %}
