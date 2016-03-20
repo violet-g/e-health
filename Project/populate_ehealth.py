@@ -9,6 +9,14 @@ from ehealth.models import *
 
 def populate():
 
+    Searcher.objects.all().delete()
+    Folder.objects.all().delete()
+    Page.objects.all().delete()
+    Category.objects.all().delete()
+    for user in User.objects.all():
+        if user.is_staff != True:
+            user.delete()
+
     user1 = add_searcher("boris","boris@test.com","boris","boris","lazarov")
     user2 = add_searcher("zdravko","zdravko@test.com","zdravko","zdravko","ivanov")
 

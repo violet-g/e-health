@@ -1,5 +1,4 @@
 $('#new_folder_modal').on('shown.bs.modal', function(event){
-    console.log("shown");
     // $("#create").click(function(){
     //     console.log(fname)
     //     $.post('/ehealth/new_folder_ajax',
@@ -11,6 +10,8 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
     //         alert('folder created: ' + data);
     //     });
     // });
+    
+    $("#new_folder_name").focus();
     
     $("#create").click(function(){
         var fname=$.trim($("input[name=new_folder_name]").val());
@@ -29,8 +30,15 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // alert('Hi   '+data['name']);
-                $("#new_folder_modal").modal('hide');
-                location.reload();
+                // $("#new_folder_modal").modal('hide');
+                var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
+                                fname +
+                                "</a></li>"
+                // location.reload();
+                $('#myModal').modal('hide');
+                console.log(new_folder);
+                console.log($("#folder_list").text());
+                $("#folder_list").append(new_folder);
             },
             
             // handle a non-successful response
@@ -39,6 +47,9 @@ $('#new_folder_modal').on('shown.bs.modal', function(event){
             }
          });
     });
-    
-    
+    $("#new_folder_name").keypress(function(event){
+        if (event.which == 13) {
+            $("#create").trigger('click');
+        }
+    });
 })

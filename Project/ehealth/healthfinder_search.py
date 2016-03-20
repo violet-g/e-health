@@ -57,5 +57,5 @@ def healthfinder_query(search_terms):
     # Return the list of results to the calling function.
     # print results
     return results
-
-#healthfinder_query("All cancer")
+if __name__=="__main__":
+    print healthfinder_query("cancer")

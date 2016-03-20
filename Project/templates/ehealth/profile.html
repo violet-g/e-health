@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load bootstrap %}
+
+{% block content %}
+    {% if ViewedUser %}
+        {% for element in ViewedUser %}<br />
+            {{ element }}<br />
+        {% endfor %}
+    {% elif not ViewedUser %}
+        This person does not wish to share their personal information.<br />
+    {% endif %}
+
+
+    {% if folders %}
+        {% for folder in folders %}
+            {{ folder.0 }}<br />
+            {% for page in folder.1 %}
+                {{ page }}<br />
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    {% if ownProfile == True %}
+        Browsing own profile
+    {% else %}
+        Not Browsing own profile {{ ownProfile }}
+    {% endif %}
+<br />
+
+{% if folders %}
+    {% for folder in folders %}
+        {{ folder }}
+    {% endfor %}
+{% endif %}
+
+
+
+ {% if message %}
+     {{ message }}
+ {% endif %}
+
+{% comment %}
+    {% if errors %}
+        <div class="error">
+        <p>Errors</p>
+        <ul>
+            {% for key,value in errors.items %}
+                {% for error in value %}
+                    <li>{{error}}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+        </div>
+{% endcomment %}
+    {% if errors %}{% for error in errors %}{{ error }}{% endfor %}{% endif %}
+
+
+            <form action="/ehealth/profile/{{ user }}/" method="post">
+                {% csrf_token %}
+                {{ update_form | bootstrap }}
+                <input class="btn btn-warning" type="submit" value="Register">
+            </form>
+
+{% endblock %}

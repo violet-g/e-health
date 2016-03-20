@@ -12,8 +12,10 @@
         </div>
         <div class="col-md-13">
             <div class="btn-group btn-group-justified" role="group">
-                <div class="btn btn-success centered glyphicon glyphicon-plus" role="button"
-                      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>
+                <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
+                <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
+                <div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"
+                      type="button"></div>
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
@@ -22,15 +24,9 @@
               
               {% if folders %}
               {% for folder in folders %}
-                <li role="presentation" class="btn-block folder"><a class="nofocus" href="#" >{{folder.name}}</a></li>
+                <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
               {% endfor %}
               {% endif %}
-                <li role="presentation" class="btn-block"><a class="nofocus" href="#">Folder 2</a></li>
-                <li role="presentation" class="btn-block"><a class="nofocus" href="#">Folder 3</a></li>
-                <!-- Button trigger modal -->
-                <li type="button" class="btn-block" data-toggle="modal" data-target="#myModal">
-                  <a href="#">Modal</a>
-                </li>
             </ul>
         </div>
     </div>
@@ -39,10 +35,11 @@
         <!-- header-->
         <div class="col-md-12">
             <div class="pull-right btn-group mtb20 headerBorder" role="group" id="header">
-              <button class="btn btn-primary " role="button">History</button>
-              <button class="btn btn-primary " id="middle" role="button">Profile</button>
+                <button class="btn btn-primary " role="button">History</button>
+                <a href="/ehealth/profile/{{user}}/" class="btn btn-primary">Profile</a>
+                <a href="/ehealth/logout/" class="btn btn-primary">Log out</a>
+              <!--<button class="btn btn-primary " id="middle" role="button">Profile</button> -->
               <!--<button class="btn btn-primary " role="button">Log out</button> -->
-              <a href="ehealth/logout/" class="btn btn-primary">Log out</a>
             </div>
         </div>
       
@@ -63,7 +60,7 @@
                     <li><a class="category_option" href="#">Users</a></li>
                   </ul>
                 </div><!-- /btn-group -->
-                <input type="text" name="search_bar" class="form-control" aria-label="..." placeholder="Search for...">
+                <input type="text" id="search_bar" name="search_bar" class="form-control" aria-label="..." placeholder="Search for...">
                 <span class="input-group-btn">
                   <button id="search_button" class="btn btn-default" type="button">Go!</button>
                 </span>
@@ -73,10 +70,10 @@
         
         <div class="col-md-13">
             <div class="btn-group btn-group-justified mtb20" role="group">
-                <div class="btn btn-default active_on_click" role="button" >All</div>
-                <div class="active_on_click btn btn-default" role="button" >Healthfinder</div>
-                <div class="active_on_click btn btn-default" role="button" >Medline+</div>
-                <div class="active_on_click btn btn-default" role="button" >Bing</div>
+                <div id="all_filter" class="btn btn-default active_on_click" role="button" >All</div>
+                <div id="healthfinder_filter" class="active_on_click btn btn-default" role="button" >Healthfinder</div>
+                <div id="medlineplus_filter" class="active_on_click btn btn-default" role="button" >MedlinePlus</div>
+                <div id="bing_filter" class="active_on_click btn btn-default" role="button" >Bing</div>
             </div>
         </div>
         <!-- I tried using tables.. didnt work out well(text was selectable)
@@ -116,27 +113,40 @@
                 </tr>
                 <tr>
                   <td class="noborder">
-                  <p class="list-group-item-text">Source: Medline+</p>
+                  <p class="list-group-item-text">Source: MedlinePlus</p>
                   </td>
                 </tr>
               </tbody>
             </table>
           </a>
-          
           -->
-          
-          <a href="#" class="list-group-item  mtb20 table table-responsive">
-                <h4 class="list-group-item-heading mtb15">Title</h4>
-                <p class="list-group-item-text mtb10">Summary</p>
-                <p class="list-group-item-text mtb10">Source: Bing</p>
-          </a>
-          
-          <a href="#" class="list-group-item  mtb20 table table-responsive">
-                <h4 class="list-group-item-heading mtb15">Title</h4>
-                <p class="list-group-item-text mtb10">Summary</p>
-                <p class="list-group-item-text mtb10">Source: Bing</p>
-          </a>
-          
+          <div id = "search_results" class = "col-md-12">
+            {% if pages %}
+            {% for page in pages %}
+              <div class="row {{page.source}} ">
+                <div class='col-md-3 mtb20 pull-right'>
+                  <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
+                  <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
+                    data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
+                  <ul class='dropdown-menu folder_options btn-block '>
+                    {% if folders %}
+                    {% for folder in folders %}
+                      <li class='folder_choice'><a href='#!'> {{folder.name}} </a></li>
+                    {% endfor %}
+                    {% endif %}
+                  </ul>
+                </div>
+                <div class='col-md-9 mtb20 pull-left'>
+                  <a href="{{page.url}}" target='_blank' class="list-group-item table table-responsive ">
+                  <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
+                  <p class="list-group-item-text mtb10">{{ page.summary }}</p>
+                  <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+            {% endif %}
+          </div>
         </div>
         
     </div>
@@ -151,41 +161,43 @@
               <div class="modal-body" id="modal_body">
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="delete" type="button" class="btn btn-primary btn-danger">Delete</button>
+                <button id="modal_close_button" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
           </div>
         </div>
     <!-- new folder modal -->
-    <div class="modal fade" id="new_folder_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Create new folder</h4>
-              </div>
-              <div class="modal-body">
-                {% csrf_token %} 
-                <input type="folder" class="form-control" name="new_folder_name" placeholder="Folder name">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="create" type="button" class="btn btn-success">Create</button>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!--<div class="modal fade" id="new_folder_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+    <!--      <div class="modal-dialog" role="document">-->
+    <!--        <div class="modal-content">-->
+    <!--          <div class="modal-header">-->
+    <!--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+    <!--            <h4 class="modal-title" id="myModalLabel">Create new folder</h4>-->
+    <!--          </div>-->
+    <!--          <div class="modal-body">-->
+    <!--            {% csrf_token %} -->
+    <!--            <input type="folder" class="form-control" id="new_folder_name" name="new_folder_name" placeholder="Folder name">-->
+    <!--          </div>-->
+    <!--          <div class="modal-footer">-->
+    <!--            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+    <!--            <button id="create" type="button" class="btn btn-success">Create</button>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
         
     
     
 </div>
 <!--<script src="{% static "hello.js" %}"></script> -->
 <!--<script src="{% static "js/headers.js" %}"></script>-->
-<script src="{% static "js/dashboard.js" %}"></script>
-<script src="{% static "js/buttons.js" %}"></script>
 <script src="{% static "js/modal.js" %}"></script>
+<script src="{% static "js/buttons.js" %}"></script>
+<script src="{% static "js/empty_modal.js" %}"></script>
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/new_folder_modal.js" %}"></script>
+<script src="{% static "js/show_folder_content.js" %}"></script>
+<script src="{% static "js/create_folder.js" %}"></script>
+<script src="{% static "js/dashboard.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
 {% endblock %}

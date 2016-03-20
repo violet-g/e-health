@@ -1,14 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from ehealth.forms import SearcherForm, LoginForm, RegisterForm
+from ehealth.forms import SearcherForm, LoginForm, RegisterForm,ChangeDetailsForm
 from ehealth.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
 from ehealth.healthfinder_search import healthfinder_query
+from textstat.textstat import textstat
+import codecs
+from textblob import *
+from django.utils.encoding import *
 from ehealth.MedlinePlus_search import medlinePlus_query
-
+from django.db.models import Count
+import json
+import urllib2
 
 
 def index(request):
@@ -18,19 +24,17 @@ def index(request):
             login_form = LoginForm()
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
-                register_form.save(commit=True)
-                return HttpResponseRedirect("dashboard")
-                #return HttpResponse('successfully registered')
+                register(request.POST)
+                return HttpResponseRedirect("dashboard/")
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
-                username = request.POST["username"]
-                password = request.POST["password"]
+                username = request.POST["username"].strip()
+                password = request.POST["password"].strip()
                 user = authenticate(username=username,password=password)
                 login(request,user)
-                return HttpResponseRedirect("dashboard")
-                #return HttpResponse('successfully logged in')
+                return HttpResponseRedirect("dashboard/")
         else:
             return HttpResponse('Unknown error occurred.')
     else:
@@ -42,26 +46,148 @@ def index(request):
         'register_form': register_form,
     })
 
+def register(request):
+    newuser = User.objects.create_user(username=request.POST["username"],email= request.POST["email"],
+                                       password = request.POST["password"],first_name=request.POST["first_name"],last_name=request.POST["last_name"] )
+    newuser.save()
+    newSearcher = Searcher(user = User.objects.get(username=request.POST["username"]))
+    newSearcher.save()
 
-#@login_required()
+
 def dashboard(request):
     context_dict={}
     try:
         user = request.user     #get the cureent logged in user
-        
+
         #get them from the User table and search for them in the searcher table,
         # since the user is of type django User whatever and the search key needs to be of the same type
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-        
+
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
         folders = searcher.folders.all()
         context_dict["folders"]=folders
     except:
         return HttpResponseRedirect("/ehealth/")
         #return HttpResponse("something went wrong")
+    try:
+        #Page.objects.annotate(Count("folders")).order_by("-folders__count")
+        topPages = Page.objects.order_by("times_saved")[:15]
+        context_dict["pages"] = topPages
+
+    except:
+        print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
-    
+
+
+
+#on all except statements needs to redirect to dashboard
+def profile(request,username):
+    if request.method=="POST":
+        form = ChangeDetailsForm(request.POST)
+        if form.is_valid():
+            errors = []
+            user = request.user
+            user=User.objects.get(username=user)
+            if request.POST["password"] and request.POST["password_retype"]:
+                if request.POST["password"] == request.POST["password_retype"]:
+                    user.set_password(request.POST["password"])
+                else:
+                    errors += ["Passwords don't match"]
+            elif (request.POST["password"] and not request.POST["password_retype"]) or (request.POST["password_retype"] and not request.POST["password"]):
+                errors += ["You need to enter your password in both password fields"]
+            if request.POST["email"]:
+                try:
+                    User.objects.get(email=request.POST["email"])
+                    errors += ["Email is already in use"]
+                except:
+                    user.email = request.POST["email"]
+            if request.POST["first_name"]:
+                user.first_name = request.POST["first_name"]
+            if request.POST["last_name"]:
+                user.last_name = request.POST["last_name"]
+            if errors == []:
+                user.save()
+                return HttpResponseRedirect("/ehealth/dashboard/")
+            else:
+                context_dict = getProfileInformation(username,request)
+                context_dict["errors"] = errors
+            #if form.errors:
+            #    context_dict["errors"] = form.errors
+            #    print form.errors
+                return render(request, 'ehealth/profile.html',context_dict)
+    elif request.method=="GET":
+        context_dict = getProfileInformation(username,request)
+        #update_form = ChangeDetailsForm()
+        #context_dict["update_form"] = update_form
+        return render(request,"ehealth/profile.html",context_dict)
+    #    except:
+           # return HttpResponse("Fail")
+    #        return HttpResponseRedirect("/ehealth/")
+
+def getProfileInformation(username,request):
+        ownProfile = True
+        context_dict={}
+        update_form = ChangeDetailsForm()
+        context_dict["update_form"] = update_form
+        try:
+            user = User.objects.get(username=username)
+            searcher = Searcher.objects.get(user=user)
+        except:
+            return HttpResponse("User does not exist")
+        try:
+            SessionUserID = request.user
+            SessionUser=User.objects.get(username=SessionUserID)
+            SessionSearcher=Searcher.objects.get(user=SessionUser)
+        except:
+            SessionSearcher=""
+        if searcher == SessionSearcher:
+            ownProfile = True
+        else:
+            ownProfile = False
+        context_dict["ownProfile"] = ownProfile
+        if ownProfile==True:
+            folders = Folder.objects.filter(user=searcher)
+        elif ownProfile==False:
+            folders = Folder.objects.filter(user=searcher,public=True)
+        context_dict["folders"] = folders
+        searcher_public = searcher.public
+        if searcher.public == True or ownProfile==True:
+            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
+        return context_dict
+
+
+        
+def add_page_ajax(request):
+    if request.method=="POST" and request.is_ajax():
+        print 
+        try:
+            page = Page.objects.get(url=request.POST["link"])
+        except:
+            page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
+            temp = calculateScores(page.summary)
+            page.readability_score = temp["readability_score"]
+            page.sentiment_score = temp["sentiment_score"]
+            page.subjectivity_score = temp["subjectivity_score"]
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+
+        page.times_saved += 1
+        print page.summary
+        page.save()
+
+        folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
+        try:
+            fp = FolderPage.objects.get(page=page,folder=folder)
+            page.times_saved -= 1
+        except:
+            fp = FolderPage.objects.get_or_create(page=page,folder=folder)[0]
+            fp.save()
+        return JsonResponse({"success":True})
+    return JsonResponse({"success":False})
+
+
 def test_ajax(request):
     if request.method=='GET':
         return HttpResponse("MAINA")
@@ -74,12 +200,13 @@ def new_folder_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-        
+        data={'name': fname, "repeat":True}
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        new_folder=Folder(user=searcher, name=fname)
-        new_folder.save()
+        if not Folder.objects.filter(user=searcher, name=fname):
+            new_folder=Folder(user=searcher, name=fname)
+            new_folder.save()
+            data["repeat"]=False
         
-        data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
@@ -87,33 +214,197 @@ def delete_folder_ajax(request):
     fname=None
     if request.method == 'POST' and request.is_ajax():
         fname=request.POST['folder']
+        user=request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        rem_folder=Folder.objects.get(name=fname, user=searcher)
         
+        rem_folder.delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        delete_folder=Folder.objects.filter(name=fname)
-        delete_folder.delete()
         
         data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
+
+
+def delete_page_ajax(request):
+    fname=None
+    if request.method == 'POST' and request.is_ajax():
+        fname=request.POST['folder']
+        link=request.POST['link']
+        user=request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        folder=Folder.objects.get(name=fname, user=searcher)
+        rem_page=Page.objects.get(url=link)
+        
+        print rem_page
+        
+        FolderPage.objects.get(page=rem_page,folder=folder).delete()
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        
+        data={'name': fname}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')    
+
+
     
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
         query=request.POST['query']
+        if str(cat).strip() == "All":
+            cat=""
+        query=str(query).strip()
+        if str(cat).strip() == "Users":
+            #handle user searching
+            users=[]
+            for searcher in Searcher.objects.all():
+                user={}
+                if not searcher.user.is_superuser:
+                    user["username"]=searcher.user.username
+                    user["first_name"]=searcher.user.first_name
+                    user["last_name"]=searcher.user.last_name
+                    user["email"] = searcher.user.email
+                    if(query in user["username"] or             #is the query in the username
+                        query in user["email"].split("@")[0] or #is it at the beginning of the email
+                        query==user["email"]):                  #or is it the whole email
+                        
+                        users.append(user)
+            return JsonResponse({'query':query,'category':cat,"users":users})
+            
+        
+        bing_res = bing_query(cat + " " + query)
+        # mp_res = medlineplus_query(cat + " " + query)
+        mp_res={}
+        hf_res = healthfinder_query(cat + " " + query)
+        # res.extend(healthfinder_query(cat + " " + query))
+        # print hf_res
+        # data={'query':query,'category':cat, "bing_result":bing_res}
+        for result in bing_res:
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result['summary'])
+            except:
+                continue
+            
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
+            # print result["summary"]
+        for result in mp_res:
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result["summary"])
+            except:
+                continue
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
+        for result in hf_res:
+            result["summary"] = result["summary"].encode('ASCII','ignore')
+            try:
+                temp = calculateScores(result["summary"])
+            except:
+                continue
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
 
-        res = bing_query(cat + " " + query)
-
-        res.extend(healthfinder_query(cat + " " + query))
-
-        res.extend(medlinePlus_query(cat + " " + query))
-
-        data={'query':query,'category':cat, "result":res}
+        data={'query':query,'category':cat, "bing_result":bing_res, 
+            "medlineplus_result":mp_res, "healthfinder_result":hf_res}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
+
+#content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
+
+def calculateScores(text):
+    print text
+    text = smart_bytes(text, encoding='utf-8', strings_only=False, errors='replace')
+    temp = TextBlob(text)
+    toReturn = {}
+    toReturn["readability_score"] = textstat.flesch_reading_ease(text)
+    toReturn["subjectivity_score"] = temp.sentiment.subjectivity
+    toReturn["sentiment_score"] = temp.sentiment.polarity
+    print toReturn["readability_score"],toReturn["subjectivity_score"],toReturn["sentiment_score"]
+    return toReturn
+
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/ehealth/')
+
+
+    
+def checkout_folder_ajax(request):
+    if request.method == 'POST' and request.is_ajax():
+        folder=request.POST['folder']
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        pages=[]
+        for f in searcher.folders.all():
+            if f.name == folder.strip():
+                # print f.pages.all()
+                for p in f.pages.all():
+                    # print p.serialise()
+                    pages.append(p.serialise())
+        # print "pages", json.dumps(pages[0])
+        return JsonResponse({"folder":folder,"pages":pages})
+        # return JsonResponse({"folder":folder,"pages":[]})
+
+
+
+
+
+
+
+    #CODE GRAVEYARD
+
+
+
+#@login_required()
+#def update_profile(request):
+#    if request.method=="POST":
+#        form = ChangeDetailsForm(request.POST)
+#        if form.is_valid():
+#            user = request.user     #get the cureent logged in user
+        #get them from the User table and search for them in the searcher table,
+        # since the user is of type django User whatever and the search key needs to be of the same type
+#            user=User.objects.get(username=user)
+#            searcher=Searcher.objects.get(user=user)
+#            if request.POST["password"]:
+#                user.set_password(request.POST["password"])
+                #user.update(password=request.get("password"))
+                #user.password = request.get("password")
+                #user.password.save()
+            # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
+#            if request.POST["email"]:
+                #HttpResponse("new e-mail found")
+ #               #user.update(email=request.get("email"))
+  #              user.email = request.POST["email"]
+                #user.save should be at the end of the function
+    #            #user.save()
+
+
+     #       if request.POST["first_name"]:
+     #           user.first_name = request.POST["first_name"]
+     #       if request.POST["last_name"]:
+     #           user.last_name = request.POST["last_name"]
+                #user.update(last_name=request.get("last_name"))
+     #       user.save()
+     #       return HttpResponseRedirect("/ehealth/dashboard/")
+     #   else:
+     #       return render(request, 'ehealth/profile.html',{
+     #           "update_form":form,
+      #      })
+
 #def search()
 
-#
 # Create your views here.
 #def register(request):
 #    if request.method == "POST":
@@ -161,12 +452,3 @@ def search_ajax(request):
 
 #    else:
 #        return render(request,'ehealth/login.html', {})
-
-
-@login_required
-def user_logout(request):
-    # Since we know the user is logged in, we can now just log them out.
-    logout(request)
-
-    # Take the user back to the homepage.
-    return HttpResponseRedirect('/ehealth/')

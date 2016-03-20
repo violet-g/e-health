@@ -47,5 +47,6 @@ def medlinePlus_query(search_terms):
     #print results
     return results
 
-#medlinePlus_query("cancer")
-#print len(medlinePlus_query("nina nina nina"))
+if __name__=="__main__":
+    print medlinePlus_query("cancer")
+    #print len(medlinePlus_query("nina nina nina"))
