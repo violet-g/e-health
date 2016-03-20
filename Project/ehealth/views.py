@@ -174,7 +174,7 @@ def add_page_ajax(request):
         searcher=Searcher.objects.get(user=user)
 
         page.times_saved += 1
-        print page.summary
+        # print page.summary
         page.save()
 
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
@@ -248,6 +248,11 @@ def delete_page_ajax(request):
 
 
 
+#readability_score
+#sentiment_score
+#subjectivity_score
+#dictionary
+
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
@@ -309,12 +314,43 @@ def search_ajax(request):
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
 
+        print "readability: " + request.POST["readability_score"]
+        print "sentiment: " + request.POST["sentiment_score"]
+        print "subjectivity: " + request.POST["subjectivity_score"]
+        readabilityS = int(request.POST["readability_score"])
+        sentimentS = int(request.POST["sentiment_score"])
+        subjectivityS = int(request.POST["subjectivity_score"])
+        bing_res = sortResults(bing_res,readabilityS,sentimentS,subjectivityS)
+        mp_res = sortResults(mp_res,readabilityS,sentimentS,subjectivityS)
+        hf_res = sortResults(hf_res,readabilityS,sentimentS,subjectivityS)
         data={'query':query,'category':cat, "bing_result":bing_res,
             "medlineplus_result":mp_res, "healthfinder_result":hf_res}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
 
+def sortResults(results,readability,sentiment,subjectivity):
+    toBack = []
+    AllConditions = []
+    TwoConditions = []
+    OneCondition = []
+    for result in results:
+        conditionsMet = 0
+        if result["readability_score"] >= readability:
+            conditionsMet += 1
+        if result["sentiment_score"] > sentiment-10:
+            conditionsMet += 1
+        if result["subjectivity_score"] > subjectivity-10 and result["subjectivity_score"] < subjectivity+10:
+            conditionsMet += 1
+        if conditionsMet == 3:
+            AllConditions.append(result)
+        elif conditionsMet == 2:
+            TwoConditions.append(result)
+        elif conditionsMet == 1:
+            OneCondition.append(result)
+        else:
+            toBack.append(result)
+    return AllConditions + TwoConditions + OneCondition + toBack
 #content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
 
 def calculateScores(text):
@@ -323,9 +359,8 @@ def calculateScores(text):
     temp = TextBlob(text)
     toReturn = {}
     toReturn["readability_score"] = textstat.flesch_reading_ease(text)
-    toReturn["subjectivity_score"] = temp.sentiment.subjectivity
-    toReturn["sentiment_score"] = temp.sentiment.polarity
-    print toReturn["readability_score"],toReturn["subjectivity_score"],toReturn["sentiment_score"]
+    toReturn["subjectivity_score"] = temp.sentiment.subjectivity * 100
+    toReturn["sentiment_score"] = (temp.sentiment.polarity + 1) * 50
     return toReturn
 
 @login_required
