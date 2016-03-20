@@ -4,7 +4,7 @@ $(document).ready(function(){
        $(this).toggleClass("active");
     });
     
-    $(".nav a").on("click", function(){
+    $("body").on("click",".nav a", function(){
        $(".nav").find(".active").removeClass("active");
        $(this).parent().addClass("active");
     });

@@ -12,7 +12,7 @@ $(document).ready(function(){
     //My guess is that is because (as far as I read) .trigger('click')
     //can be called only on jQuery objects with created click handlers
     //before trigger is called, and search.js is imported after dashboard.js
-    $('#all_filter').trigger("click");  
+    $('#all_filter').trigger("click");
 
     $("#search_button").click(function(){
         var query=$.trim($("input[name=search_bar]").val());
@@ -28,9 +28,9 @@ $(document).ready(function(){
             data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                     query:query,
                     category:category,
-                    readability_score:5,
-                    sentiment_score:8,
-                    subjectivity_score:4,
+                    readability_score:70,
+                    sentiment_score:80,
+                    subjectivity_score:40,
                 }, // data sent with the post request
 
             // handle a successful response
@@ -114,7 +114,7 @@ $(document).ready(function(){
                                       "<button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                                         "Choose folder" +
                                       "</button>" +
-                                      "<ul class='dropdown-menu folder_options '>"
+                                      "<ul class='dropdown-menu folder_options btn-block '>"
                 
                 
                 var items;
@@ -153,52 +153,6 @@ $(document).ready(function(){
                     }
                 };
                 $(".showing").trigger('click');
-                
-                $(".folder_choice").click(function(){
-                    // $(this).parent().children(".folder_choice_button").text();
-                    // $(".folder_choice_button").text($(this).text());
-                    console.log($(this).parent().parent().children(".folder_choice_button").text());
-                    $(this).parent().parent().children(".folder_choice_button").text($(this).text());
-                });
-                $(".add_to_folder_button").click(function(){
-                    // console.log($(this).text());
-                    // console.log($(this).parent().parent().children().text());
-                    var folder = $(this).parent().children(".folder_choice_button").text();
-                    // var folder = $(".folder_choice_button").text();
-                    var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
-                    var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
-                    var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
-                    var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
-                    if($.trim(folder)=="Choose folder")
-                        return
-                    // console.log()
-                    $.ajax({
-                            url : '/ehealth/add_page_ajax/', // the endpoint,commonly same url
-                            type : "POST", // http method
-                            data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-                                    folder:folder,
-                                    link:link,
-                                    title:title,
-                                    summary:summary,
-                                    source:source,
-                                    }, // data sent with the post request
-
-                            // handle a successful response
-                            success : function(data) {
-                                console.log(data);
-                            },
-                            // handle a non-successful response
-                            error : function(xhr,errmsg,err) {
-                                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                            }
-                    })
-                    
-                    
-                    // console.log($(this).parent().parent().parent())
-                    // var txt=$(this).text().substr(0,15);
-                    // if(txt.length < $(this).text().length)
-                    //     txt+="..."
-                });
             },
 
             // handle a non-successful response
@@ -214,5 +168,53 @@ $(document).ready(function(){
         }
     });
     
-    
+    // $(".folder_choice").click(function(){
+    $("body").on("click",".folder_choice", function(){
+        // $(this).parent().children(".folder_choice_button").text();
+        // $(".folder_choice_button").text($(this).text());
+        // console.log($(this).parent().parent().children(".folder_choice_button").text());
+        $(this).parent().parent().children(".folder_choice_button").text($(this).text());
+    });
+    // $(".add_to_folder_button").click(function(){
+    $("body").on('click','.add_to_folder_button', function(){
+        // console.log($(this).text());
+        // console.log($(this).parent().parent().children().text());
+        var folder = $(this).parent().children(".folder_choice_button").text();
+        // var folder = $(".folder_choice_button").text();
+        var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
+        var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
+        var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
+        var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
+        if($.trim(folder)=="Choose folder")
+            return
+        // console.log()
+        $.ajax({
+                url : '/ehealth/add_page_ajax/', // the endpoint,commonly same url
+                type : "POST", // http method
+                data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                        folder:folder,
+                        link:link,
+                        title:title,
+                        summary:summary,
+                        source:source,
+                        }, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    console.log(data);
+                },
+                // handle a non-successful response
+                error : function(xhr,errmsg,err) {
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+        })
+        
+        
+        // console.log($(this).parent().parent().parent())
+        // var txt=$(this).text().substr(0,15);
+        // if(txt.length < $(this).text().length)
+        //     txt+="..."
+    });
+
+
 })

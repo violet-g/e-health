@@ -210,7 +210,7 @@ def add_page_ajax(request):
             fp = FolderPage.objects.get(page=page,folder=folder)
             page.times_saved -= 1
         except:
-            fp = FolderPage.objects.get_or_create(page=page,folder=folder)
+            fp = FolderPage.objects.get_or_create(page=page,folder=folder)[0]
             fp.save()
         return JsonResponse({"success":True})
     return JsonResponse({"success":False})
@@ -228,12 +228,13 @@ def new_folder_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-        
+        data={'name': fname, "repeat":True}
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        new_folder=Folder(user=searcher, name=fname)
-        new_folder.save()
+        if not Folder.objects.filter(user=searcher, name=fname):
+            new_folder=Folder(user=searcher, name=fname)
+            new_folder.save()
+            data["repeat"]=False
         
-        data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 

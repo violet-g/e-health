@@ -15,16 +15,23 @@ $(document).ready(function(){
         $("#modal_body").append("<input type='folder' class='form-control' id='new_folder_name' name='new_folder_name' placeholder='Folder name'>");
         $("#modal_close_button").after($(create_button));
         $("#myModal").modal('show');
+        
+        $("#new_folder_name").focus();
         $("#new_folder_name").keypress(function(event){
-            if (event.which == 13) {
+            if (event.which == 13) {    //enter button
                 $("#create").trigger('click');
             }
         });
+        
         $("#create").click(function(){
+            $(".alert").remove(); //delete any alerts from before
             var fname=$.trim($("input[name=new_folder_name]").val());
             $("input[name=new_folder_name]").val('');
             if(fname=="")
+            {
+                $("#new_folder_name").before("<div class='alert alert-danger' role='alert'>Nameless folder?</div>");
                 return;
+            }
             
             
             $.ajax({
@@ -39,6 +46,16 @@ $(document).ready(function(){
                     console.log(data); // another sanity check
                     //On success show the data posted to server as a message
                     // alert('Hi   '+data['name']);
+                    if(data['repeat']==true)
+                    {
+                        $("#new_folder_name").before("<div class='alert alert-danger ' role='alert'>You already have a folder with that name!</div>");
+                        return;
+                    }
+                    else
+                    {
+                        $("#header").before("<div class='alert alert-success mtb20 col-md-8' role='alert'>Folder was created!</div>");
+                        $(".alert").fadeOut(1750, function(){$(this).remove()});
+                    }
                     $("#myModal").modal('hide');
                     var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
                                     fname +

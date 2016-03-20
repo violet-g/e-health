@@ -30,6 +30,10 @@ $(document).ready(function(){
                     // location.reload();
                     folder_object.remove();
                     $("#myModal").modal('hide');
+                    $("#header").before("<div class='alert alert-warning mtb20 col-md-8' role='alert'>Folder was deleted!</div>");
+                    $(".alert").fadeOut(1750, function(){$(this).remove()});
+                    $('.folder_choice:contains(' + folder + ')').remove();
+                    
                 },
                 
                 // handle a non-successful response
