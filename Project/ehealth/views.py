@@ -126,41 +126,39 @@ def profile(request,username):
     #        return HttpResponseRedirect("/ehealth/")
 
 def getProfileInformation(username,request):
+    ownProfile = True
+    context_dict={}
+    update_form = ChangeDetailsForm()
+    context_dict["update_form"] = update_form
+    try:
+        user = User.objects.get(username=username)
+        searcher = Searcher.objects.get(user=user)
+    except:
+        return HttpResponse("User does not exist")
+    try:
+        SessionUserID = request.user
+        SessionUser=User.objects.get(username=SessionUserID)
+        SessionSearcher=Searcher.objects.get(user=SessionUser)
+    except:
+        SessionSearcher=""
+    if searcher == SessionSearcher:
         ownProfile = True
-        context_dict={}
-        update_form = ChangeDetailsForm()
-        context_dict["update_form"] = update_form
-        try:
-            user = User.objects.get(username=username)
-            searcher = Searcher.objects.get(user=user)
-        except:
-            return HttpResponse("User does not exist")
-        try:
-            SessionUserID = request.user
-            SessionUser=User.objects.get(username=SessionUserID)
-            SessionSearcher=Searcher.objects.get(user=SessionUser)
-        except:
-            SessionSearcher=""
-        if searcher == SessionSearcher:
-            ownProfile = True
-        else:
-            ownProfile = False
-        context_dict["ownProfile"] = ownProfile
-        if ownProfile==True:
-            folders = Folder.objects.filter(user=searcher)
-        elif ownProfile==False:
-            folders = Folder.objects.filter(user=searcher,public=True)
-        context_dict["folders"] = folders
-        searcher_public = searcher.public
-        if searcher.public == True or ownProfile==True:
-            context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
-        return context_dict
+    else:
+        ownProfile = False
+    context_dict["ownProfile"] = ownProfile
+    if ownProfile==True:
+        folders = Folder.objects.filter(user=searcher)
+    elif ownProfile==False:
+        folders = Folder.objects.filter(user=searcher,public=True)
+    context_dict["folders"] = folders
+    searcher_public = searcher.public
+    context_dict["ViewedUser"] = [searcher.public,user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
+    return context_dict
 
 
         
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
-        print 
         try:
             page = Page.objects.get(url=request.POST["link"])
         except:
@@ -275,8 +273,8 @@ def search_ajax(request):
             
         
         bing_res = bing_query(cat + " " + query)
-        # mp_res = medlineplus_query(cat + " " + query)
-        mp_res={}
+        mp_res = medlinePlus_query(cat + " " + query)
+        # mp_res={}
         hf_res = healthfinder_query(cat + " " + query)
         # res.extend(healthfinder_query(cat + " " + query))
         # print hf_res
