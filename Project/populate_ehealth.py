@@ -19,6 +19,8 @@ def populate():
 
     user1 = add_searcher("boris","boris@test.com","boris","boris","lazarov")
     user2 = add_searcher("zdravko","zdravko@test.com","zdravko","zdravko","ivanov")
+    user3 = add_searcher("jill","jill@mail.com","jill","jill","valentine")
+
 
     cat1 = add_category("DE_ac")
     cat2 = add_category("it hurts")
@@ -75,3 +77,4 @@ def add_pageCategory(page,category):
 if __name__ == '__main__':
     print "Starting Ehealth population script..."
     populate()
+    print "Ehealth population script successfully completed."

@@ -156,7 +156,13 @@ def getProfileInformation(username,request):
             context_dict["ViewedUser"] = [user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
         return context_dict
 
-
+def profileRedirect(request):
+    try:
+        user = request.user
+        user=User.objects.get(username=user)
+        return HttpResponseRedirect("/ehealth/profile/"+user.username+"/")
+    except:
+        return HttpResponseRedirect("/ehealth/")
 
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
