@@ -121,17 +121,31 @@
           </a>
           -->
           <div id = "search_results" class = "col-md-12">
-            <a href="#" class="list-group-item  mtb20 table table-responsive Healthfinder">
-                  <h4 class="list-group-item-heading mtb15">Title</h4>
-                  <p class="list-group-item-text mtb10">Summary</p>
-                  <p class="list-group-item-text mtb10">Source: Healthfinder</p>
-            </a>
-            
-            <a href="#" class="list-group-item  mtb20 table table-responsive MedlinePlus">
-                  <h4 class="list-group-item-heading mtb15">Title</h4>
-                  <p class="list-group-item-text mtb10">Summary</p>
-                  <p class="list-group-item-text mtb10">Source: MedlinePlus</p>
-            </a>
+            {% if pages %}
+            {% for page in pages %}
+              <div class="row {{page.source}} ">
+                <div class='col-md-3 mtb20 pull-right'>
+                  <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
+                  <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
+                    data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
+                  <ul class='dropdown-menu folder_options '>
+                    {% if folders %}
+                    {% for folder in folders %}
+                      <li class='folder_choice'><a href='#!'> {{folder.name}} </a></li>
+                    {% endfor %}
+                    {% endif %}
+                  </ul>
+                </div>
+                <div class='col-md-9 mtb20 pull-left'>
+                  <a href="#" class="list-group-item table table-responsive ">
+                      <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
+                      <p class="list-group-item-text mtb10">{{ page.summary }}</p>
+                      <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+            {% endif %}
           </div>
         </div>
         

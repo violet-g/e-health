@@ -67,9 +67,10 @@ def dashboard(request):
         return HttpResponseRedirect("/ehealth/")
         #return HttpResponse("something went wrong")
     try:
-        Page.objects.order_by("times_saved")
         #Page.objects.annotate(Count("folders")).order_by("-folders__count")
-        print Page.objects.order_by("times_saved")
+        topPages = Page.objects.order_by("times_saved")[:15]
+        context_dict["pages"] = topPages
+
     except:
         print "stuff broke"
     return render(request, 'dashboard.html',context_dict)
@@ -153,41 +154,41 @@ def getProfileInformation(username,request):
 
 
 
-@login_required()
-def update_profile(request):
-    if request.method=="POST":
-        form = ChangeDetailsForm(request.POST)
-        if form.is_valid():
-            user = request.user     #get the cureent logged in user
+#@login_required()
+#def update_profile(request):
+#    if request.method=="POST":
+#        form = ChangeDetailsForm(request.POST)
+#        if form.is_valid():
+#            user = request.user     #get the cureent logged in user
         #get them from the User table and search for them in the searcher table,
         # since the user is of type django User whatever and the search key needs to be of the same type
-            user=User.objects.get(username=user)
-            searcher=Searcher.objects.get(user=user)
-            if request.POST["password"]:
-                user.set_password(request.POST["password"])
+#            user=User.objects.get(username=user)
+#            searcher=Searcher.objects.get(user=user)
+#            if request.POST["password"]:
+#                user.set_password(request.POST["password"])
                 #user.update(password=request.get("password"))
                 #user.password = request.get("password")
                 #user.password.save()
             # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
-            if request.POST["email"]:
+#            if request.POST["email"]:
                 #HttpResponse("new e-mail found")
-                #user.update(email=request.get("email"))
-                user.email = request.POST["email"]
+ #               #user.update(email=request.get("email"))
+  #              user.email = request.POST["email"]
                 #user.save should be at the end of the function
-                #user.save()
+    #            #user.save()
 
 
-            if request.POST["first_name"]:
-                user.first_name = request.POST["first_name"]
-            if request.POST["last_name"]:
-                user.last_name = request.POST["last_name"]
+     #       if request.POST["first_name"]:
+     #           user.first_name = request.POST["first_name"]
+     #       if request.POST["last_name"]:
+     #           user.last_name = request.POST["last_name"]
                 #user.update(last_name=request.get("last_name"))
-            user.save()
-            return HttpResponseRedirect("/ehealth/dashboard/")
-        else:
-            return render(request, 'ehealth/profile.html',{
-                "update_form":form,
-            })
+     #       user.save()
+     #       return HttpResponseRedirect("/ehealth/dashboard/")
+     #   else:
+     #       return render(request, 'ehealth/profile.html',{
+     #           "update_form":form,
+      #      })
             
         
 def add_page_ajax(request):

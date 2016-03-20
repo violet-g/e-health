@@ -50,7 +50,7 @@ $(document).ready(function(){
                     
                     for(var i=0; i<users.length;i++)
                     {
-                        link_a = "<a href='#' target='_blank' class='list-group-item table table-responsive'>"
+                        link_a = "<a href='#' target='_blank' class='list-group-item mtb20 table table-responsive'>"
                         username_h4= "<h4 class='list-group-item-heading mtb15'>"
                         names_p = "<p class='list-group-item-text mtb10'>"
                         email_p = "<p class='list-group-item-text mtb10'>"
