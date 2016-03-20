@@ -157,18 +157,21 @@ def getProfileInformation(username,request):
         return context_dict
 
 
-        
+
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
-        print 
+        print
         try:
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
-            temp = calculateScores(page.summary)
-            page.readability_score = temp["readability_score"]
-            page.sentiment_score = temp["sentiment_score"]
-            page.subjectivity_score = temp["subjectivity_score"]
+            try:
+                temp = calculateScores(page.summary)
+                page.readability_score = temp["readability_score"]
+                page.sentiment_score = temp["sentiment_score"]
+                page.subjectivity_score = temp["subjectivity_score"]
+            except:
+                pass
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
@@ -200,11 +203,11 @@ def new_folder_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-        
+
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
         new_folder=Folder(user=searcher, name=fname)
         new_folder.save()
-        
+
         data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
@@ -217,10 +220,10 @@ def delete_folder_ajax(request):
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
         rem_folder=Folder.objects.get(name=fname, user=searcher)
-        
+
         rem_folder.delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        
+
         data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
@@ -236,18 +239,18 @@ def delete_page_ajax(request):
         searcher=Searcher.objects.get(user=user)
         folder=Folder.objects.get(name=fname, user=searcher)
         rem_page=Page.objects.get(url=link)
-        
+
         print rem_page
-        
+
         FolderPage.objects.get(page=rem_page,folder=folder).delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        
+
         data={'name': fname}
         return JsonResponse(data)
-    return render(request, 'dashboard.html')    
+    return render(request, 'dashboard.html')
 
 
-    
+
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
@@ -268,11 +271,11 @@ def search_ajax(request):
                     if(query in user["username"] or             #is the query in the username
                         query in user["email"].split("@")[0] or #is it at the beginning of the email
                         query==user["email"]):                  #or is it the whole email
-                        
+
                         users.append(user)
             return JsonResponse({'query':query,'category':cat,"users":users})
-            
-        
+
+
         bing_res = bing_query(cat + " " + query)
         # mp_res = medlineplus_query(cat + " " + query)
         mp_res={}
@@ -285,7 +288,7 @@ def search_ajax(request):
             result["readability_score"] = temp["readability_score"]
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
-            print result["summary"]
+
         for result in mp_res:
             temp = calculateScores(result["summary"])
             result["readability_score"] = temp["readability_score"]
@@ -297,7 +300,7 @@ def search_ajax(request):
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
 
-        data={'query':query,'category':cat, "bing_result":bing_res, 
+        data={'query':query,'category':cat, "bing_result":bing_res,
             "medlineplus_result":mp_res, "healthfinder_result":hf_res}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
@@ -307,7 +310,7 @@ def search_ajax(request):
 
 def calculateScores(text):
     print text
-    text = smart_bytes(text, encoding='utf-8', strings_only=False, errors='replace')
+    text = unicode(text,errors="replace")
     temp = TextBlob(text)
     toReturn = {}
     toReturn["readability_score"] = textstat.flesch_reading_ease(text)
@@ -325,7 +328,7 @@ def user_logout(request):
     return HttpResponseRedirect('/ehealth/')
 
 
-    
+
 def checkout_folder_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         folder=request.POST['folder']
