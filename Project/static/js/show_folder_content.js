@@ -1,5 +1,6 @@
 
-$(".folder").dblclick(function(){
+// $(".folder").dblclick(function(){
+$("body").on('dblclick', ".folder",function(){
     var folder = $(this).text();
     // console.log(folder);
     

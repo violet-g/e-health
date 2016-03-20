@@ -15,6 +15,11 @@ $(document).ready(function(){
         $("#modal_body").append("<input type='folder' class='form-control' id='new_folder_name' name='new_folder_name' placeholder='Folder name'>");
         $("#modal_close_button").after($(create_button));
         $("#myModal").modal('show');
+        $("#new_folder_name").keypress(function(event){
+            if (event.which == 13) {
+                $("#create").trigger('click');
+            }
+        });
         $("#create").click(function(){
             var fname=$.trim($("input[name=new_folder_name]").val());
             $("input[name=new_folder_name]").val('');
@@ -42,7 +47,9 @@ $(document).ready(function(){
                     // $('#new_folder_modal').modal('hide');
                     console.log(new_folder);
                     console.log($("#folder_list").children());
-                    $("#folder_list").append(new_folder);
+                    $(".folder_list").append(new_folder);
+                    var new_folder_choice = "<li class='folder_choice'><a href='#!'>" + fname + "</a></li>"
+                    $(".folder_options").append(new_folder_choice);
                 },
                 
                 // handle a non-successful response

@@ -114,7 +114,7 @@ $(document).ready(function(){
                                       "<button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                                         "Choose folder" +
                                       "</button>" +
-                                      "<ul class='dropdown-menu'>"
+                                      "<ul class='dropdown-menu folder_options '>"
                 
                 
                 var items;
