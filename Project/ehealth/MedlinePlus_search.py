@@ -1,6 +1,9 @@
 import urllib, urllib2
 import xml.etree.ElementTree
 
+def remove_tags(text):
+    return ''.join(xml.etree.ElementTree.fromstring("<dummy_tag>" + text +"</dummy_tag>").itertext())
+
 def medlinePlus_query(search_terms):
     # Specify the base
     root_url = 'https://wsearch.nlm.nih.gov/ws/query'
@@ -27,9 +30,9 @@ def medlinePlus_query(search_terms):
                     summary = content.text
 
             entry = {
-                'title': title,
+                'title': remove_tags(title),
                 'link': doc.get('url'),
-                'summary': summary
+                'summary': remove_tags(summary)
             }
 
             results.append(entry) 
@@ -44,5 +47,5 @@ def medlinePlus_query(search_terms):
     #print results
     return results
 
-#medlinePlus_query("cancer")#
+#medlinePlus_query("cancer")
 #print len(medlinePlus_query("nina nina nina"))
