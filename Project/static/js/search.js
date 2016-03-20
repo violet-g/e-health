@@ -108,10 +108,10 @@ $(document).ready(function(){
                 //                     "</div>";
                 
                 var add_to_folder = "<div class='col-md-3 mtb20 pull-right'>" +
-                                      "<button id='add_to_folder' type='button' class='btn btn-block btn-success'>" +
+                                      "<button type='button' class='btn btn-block btn-success add_to_folder_button'>" +
                                         "Add folder" +
                                       "</button>" +
-                                      "<button id='choose_folder' type='button' class='btn btn-block btn-default dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                                      "<button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
                                         "Choose folder" +
                                       "</button>" +
                                       "<ul class='dropdown-menu'>"
@@ -153,20 +153,25 @@ $(document).ready(function(){
                     }
                 };
                 $(".showing").trigger('click');
+                
                 $(".folder_choice").click(function(){
-                    $("#choose_folder").text($(this).text());
+                    // $(this).parent().children(".folder_choice_button").text();
+                    // $(".folder_choice_button").text($(this).text());
+                    console.log($(this).parent().parent().children(".folder_choice_button").text());
+                    $(this).parent().parent().children(".folder_choice_button").text($(this).text());
                 });
-                $("#add_to_folder").click(function(){
+                $(".add_to_folder_button").click(function(){
                     // console.log($(this).text());
                     // console.log($(this).parent().parent().children().text());
-                    var folder = $("#choose_folder").text();
+                    var folder = $(this).parent().children(".folder_choice_button").text();
+                    // var folder = $(".folder_choice_button").text();
                     var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
                     var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
                     var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
                     var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
                     if($.trim(folder)=="Choose folder")
                         return
-                    
+                    // console.log()
                     $.ajax({
                             url : '/ehealth/add_page_ajax/', // the endpoint,commonly same url
                             type : "POST", // http method

@@ -191,6 +191,7 @@ def getProfileInformation(username,request):
         
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
+        print 
         try:
             page = Page.objects.get(url=request.POST["link"])
         except:
@@ -198,8 +199,10 @@ def add_page_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
+
         page.times_saved += 1
         page.save()
+
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
         try:
             fp = FolderPage.objects.get(page=page,folder=folder)
@@ -236,14 +239,40 @@ def delete_folder_ajax(request):
     fname=None
     if request.method == 'POST' and request.is_ajax():
         fname=request.POST['folder']
+        user=request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        rem_folder=Folder.objects.get(name=fname, user=searcher)
         
+        rem_folder.delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        delete_folder=Folder.objects.filter(name=fname)
-        delete_folder.delete()
         
         data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
+
+
+def delete_page_ajax(request):
+    fname=None
+    if request.method == 'POST' and request.is_ajax():
+        fname=request.POST['folder']
+        link=request.POST['link']
+        user=request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        folder=Folder.objects.get(name=fname, user=searcher)
+        rem_page=Page.objects.get(url=link)
+        
+        print rem_page
+        
+        FolderPage.objects.get(page=rem_page,folder=folder).delete()
+        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
+        
+        data={'name': fname}
+        return JsonResponse(data)
+    return render(request, 'dashboard.html')    
+
+
     
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
@@ -300,9 +329,7 @@ def checkout_folder_ajax(request):
         searcher=Searcher.objects.get(user=user)
         pages=[]
         for f in searcher.folders.all():
-            print f, folder
             if f.name == folder.strip():
-                print "HUI"
                 # print f.pages.all()
                 for p in f.pages.all():
                     # print p.serialise()
