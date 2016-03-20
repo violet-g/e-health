@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
 from ehealth.healthfinder_search import healthfinder_query
+from textstat.textstat import textstat
+import codecs
+from textblob import *
+from django.utils.encoding import *
 from ehealth.MedlinePlus_search import medlinePlus_query
 from django.db.models import Count
 import json
@@ -153,43 +157,6 @@ def getProfileInformation(username,request):
         return context_dict
 
 
-
-#@login_required()
-#def update_profile(request):
-#    if request.method=="POST":
-#        form = ChangeDetailsForm(request.POST)
-#        if form.is_valid():
-#            user = request.user     #get the cureent logged in user
-        #get them from the User table and search for them in the searcher table,
-        # since the user is of type django User whatever and the search key needs to be of the same type
-#            user=User.objects.get(username=user)
-#            searcher=Searcher.objects.get(user=user)
-#            if request.POST["password"]:
-#                user.set_password(request.POST["password"])
-                #user.update(password=request.get("password"))
-                #user.password = request.get("password")
-                #user.password.save()
-            # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
-#            if request.POST["email"]:
-                #HttpResponse("new e-mail found")
- #               #user.update(email=request.get("email"))
-  #              user.email = request.POST["email"]
-                #user.save should be at the end of the function
-    #            #user.save()
-
-
-     #       if request.POST["first_name"]:
-     #           user.first_name = request.POST["first_name"]
-     #       if request.POST["last_name"]:
-     #           user.last_name = request.POST["last_name"]
-                #user.update(last_name=request.get("last_name"))
-     #       user.save()
-     #       return HttpResponseRedirect("/ehealth/dashboard/")
-     #   else:
-     #       return render(request, 'ehealth/profile.html',{
-     #           "update_form":form,
-      #      })
-            
         
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
@@ -198,11 +165,16 @@ def add_page_ajax(request):
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
+            temp = calculateScores(page.summary)
+            page.readability_score = temp["readability_score"]
+            page.sentiment_score = temp["sentiment_score"]
+            page.subjectivity_score = temp["subjectivity_score"]
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
 
         page.times_saved += 1
+        print page.summary
         page.save()
 
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
@@ -308,12 +280,41 @@ def search_ajax(request):
         # res.extend(healthfinder_query(cat + " " + query))
         # print hf_res
         # data={'query':query,'category':cat, "bing_result":bing_res}
-        
+        for result in bing_res:
+            temp = calculateScores(result["summary"])
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
+            print result["summary"]
+        for result in mp_res:
+            temp = calculateScores(result["summary"])
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
+        for result in hf_res:
+            temp = calculateScores(result["summary"])
+            result["readability_score"] = temp["readability_score"]
+            result["subjectivity_score"] = temp["subjectivity_score"]
+            result["sentiment_score"] = temp["sentiment_score"]
+
         data={'query':query,'category':cat, "bing_result":bing_res, 
             "medlineplus_result":mp_res, "healthfinder_result":hf_res}
-            
         return JsonResponse(data)
     return render(request, 'dashboard.html')
+
+
+#content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
+
+def calculateScores(text):
+    print text
+    text = smart_bytes(text, encoding='utf-8', strings_only=False, errors='replace')
+    temp = TextBlob(text)
+    toReturn = {}
+    toReturn["readability_score"] = textstat.flesch_reading_ease(text)
+    toReturn["subjectivity_score"] = temp.sentiment.subjectivity
+    toReturn["sentiment_score"] = temp.sentiment.polarity
+    print toReturn["readability_score"],toReturn["subjectivity_score"],toReturn["sentiment_score"]
+    return toReturn
 
 @login_required
 def user_logout(request):
@@ -341,6 +342,53 @@ def checkout_folder_ajax(request):
         # print "pages", json.dumps(pages[0])
         return JsonResponse({"folder":folder,"pages":pages})
         # return JsonResponse({"folder":folder,"pages":[]})
+
+
+
+
+
+
+
+    #CODE GRAVEYARD
+
+
+
+#@login_required()
+#def update_profile(request):
+#    if request.method=="POST":
+#        form = ChangeDetailsForm(request.POST)
+#        if form.is_valid():
+#            user = request.user     #get the cureent logged in user
+        #get them from the User table and search for them in the searcher table,
+        # since the user is of type django User whatever and the search key needs to be of the same type
+#            user=User.objects.get(username=user)
+#            searcher=Searcher.objects.get(user=user)
+#            if request.POST["password"]:
+#                user.set_password(request.POST["password"])
+                #user.update(password=request.get("password"))
+                #user.password = request.get("password")
+                #user.password.save()
+            # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
+#            if request.POST["email"]:
+                #HttpResponse("new e-mail found")
+ #               #user.update(email=request.get("email"))
+  #              user.email = request.POST["email"]
+                #user.save should be at the end of the function
+    #            #user.save()
+
+
+     #       if request.POST["first_name"]:
+     #           user.first_name = request.POST["first_name"]
+     #       if request.POST["last_name"]:
+     #           user.last_name = request.POST["last_name"]
+                #user.update(last_name=request.get("last_name"))
+     #       user.save()
+     #       return HttpResponseRedirect("/ehealth/dashboard/")
+     #   else:
+     #       return render(request, 'ehealth/profile.html',{
+     #           "update_form":form,
+      #      })
+
 #def search()
 
 # Create your views here.
