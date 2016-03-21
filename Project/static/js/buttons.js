@@ -8,4 +8,14 @@ $(document).ready(function(){
        $(".nav").find(".active").removeClass("active");
        $(this).parent().addClass("active");
     });
+    
+    $("body").on("click", ".privacy_button", function(){
+        $(this).toggleClass("btn-danger btn-success")
+        var text = $(this).text();
+        if($.trim(text)=="Public")
+            $(this).text("Hidden");
+        else
+            $(this).text("Public");
+        $("#save_folder_changes").removeClass("disabled");
+    });
 })

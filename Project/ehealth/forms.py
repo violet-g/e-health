@@ -80,30 +80,30 @@ class RegisterForm(forms.ModelForm):
 
 #rework
 class ChangeDetailsForm(forms.Form):
-    password = forms.CharField(widget=PasswordInput(),label="Change password",help_text="Please enter your new password",required=False)
-    password_retype = forms.CharField(widget=PasswordInput(),label="Change password",help_text="Please re-enter your new password",required=False)
-    email = forms.EmailField(label='e-mail',required=False,help_text="Please enter your new e-mail")
-    first_name = forms.CharField(label='first name',required=False,help_text="Please enter your updated forename")
-    last_name = forms.CharField(label='last name',required=False,help_text="Please enter your updated sirname")
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Enter your new password"}),label="Change password",required=False)
+    password_retype = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Please re-enter your new password"}),required=False)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': "Please enter your new e-mail"}),label='e-mail',required=False)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated forename"}), label='First name',required=False)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated sirname"}) ,label='Last name',required=False)
 
-#    def clean(self):
-#        try:
-#            emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
-#        except:
-#            emailTaken = None
-#        if emailTaken:
-#            raise forms.ValidationError("email is already in use")
+    # def clean(self):
+    #     try:
+    #         emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
+    #     except:
+    #         emailTaken = None
+    #     if emailTaken:
+    #         raise forms.ValidationError("email is already in use")
 
 
-#        if self.cleaned_data.get("password"):
-#            if self.cleaned_data.get("password") != self.cleaned_data.get("password_retype"):
-#                raise forms.ValidationError("Passwords don't match", code='not_match')
-#            try:
-#                pass
-#            except:
-#                raise forms.ValidationError("Please enter password in both fields")
+    #     if self.cleaned_data.get("password"):
+    #         if self.cleaned_data.get("password") != self.cleaned_data.get("password_retype"):
+    #             raise forms.ValidationError("Passwords don't match", code='not_match')
+    #         try:
+    #             pass
+    #         except:
+    #             raise forms.ValidationError("Please enter password in both fields")
 
-#       return self.cleaned_data
+    #     return self.cleaned_data
 
 
 

@@ -15,6 +15,7 @@ from ehealth.MedlinePlus_search import medlinePlus_query
 from django.db.models import Count
 import json
 import urllib2
+from django.core.validators import validate_email
 
 
 def index(request):
@@ -98,10 +99,20 @@ def profile(request,username):
                 errors += ["You need to enter your password in both password fields"]
             if request.POST["email"]:
                 try:
-                    User.objects.get(email=request.POST["email"])
-                    errors += ["Email is already in use"]
+                    emailTaken = User.objects.get(email=request.POST["email"])
+                    emailTaken = True
                 except:
+                    emailTaken = False
+                if emailTaken == True:
+                    errors += ["Email is already taken"]
+                else:
                     user.email = request.POST["email"]
+            # if request.POST["email"]:
+            #     try:
+            #         User.objects.get(email=request.POST["email"])
+            #         errors += ["Email is already in use"]
+            #     except:
+            #         user.email = request.POST["email"]
             if request.POST["first_name"]:
                 user.first_name = request.POST["first_name"]
             if request.POST["last_name"]:
@@ -116,6 +127,10 @@ def profile(request,username):
             #    context_dict["errors"] = form.errors
             #    print form.errors
                 return render(request, 'ehealth/profile.html',context_dict)
+        else:
+            # print validate_email(request.POST['email'])
+            context_dict = getProfileInformation(username,request)
+            return HttpResponseRedirect('/ehealth/profile/', context_dict)
     elif request.method=="GET":
         context_dict = getProfileInformation(username,request)
         #update_form = ChangeDetailsForm()
@@ -130,6 +145,7 @@ def getProfileInformation(username,request):
     context_dict={}
     update_form = ChangeDetailsForm()
     context_dict["update_form"] = update_form
+    context_dict["logged_in"]=True
     try:
         user = User.objects.get(username=username)
         searcher = Searcher.objects.get(user=user)
@@ -141,6 +157,7 @@ def getProfileInformation(username,request):
         SessionSearcher=Searcher.objects.get(user=SessionUser)
     except:
         SessionSearcher=""
+        context_dict["logged_in"]=False
     if searcher == SessionSearcher:
         ownProfile = True
     else:
@@ -155,8 +172,14 @@ def getProfileInformation(username,request):
     context_dict["ViewedUser"] = [searcher.public,user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
     return context_dict
 
+def profileRedirect(request):
+    try:
+        user = request.user
+        user=User.objects.get(username=user)
+        return HttpResponseRedirect("/ehealth/profile/"+user.username+"/")
+    except:
+        return HttpResponseRedirect("/ehealth/")
 
-        
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
         try:
@@ -172,7 +195,7 @@ def add_page_ajax(request):
         searcher=Searcher.objects.get(user=user)
 
         page.times_saved += 1
-        print page.summary
+        # print page.summary
         page.save()
 
         folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
@@ -204,7 +227,6 @@ def new_folder_ajax(request):
             new_folder=Folder(user=searcher, name=fname)
             new_folder.save()
             data["repeat"]=False
-        
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
@@ -216,10 +238,10 @@ def delete_folder_ajax(request):
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
         rem_folder=Folder.objects.get(name=fname, user=searcher)
-        
+
         rem_folder.delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        
+
         data={'name': fname}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
@@ -235,18 +257,23 @@ def delete_page_ajax(request):
         searcher=Searcher.objects.get(user=user)
         folder=Folder.objects.get(name=fname, user=searcher)
         rem_page=Page.objects.get(url=link)
-        
+
         print rem_page
-        
+
         FolderPage.objects.get(page=rem_page,folder=folder).delete()
         #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
-        
+
         data={'name': fname}
         return JsonResponse(data)
-    return render(request, 'dashboard.html')    
+    return render(request, 'dashboard.html')
 
 
-    
+
+#readability_score
+#sentiment_score
+#subjectivity_score
+#dictionary
+
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
@@ -267,11 +294,11 @@ def search_ajax(request):
                     if(query in user["username"] or             #is the query in the username
                         query in user["email"].split("@")[0] or #is it at the beginning of the email
                         query==user["email"]):                  #or is it the whole email
-                        
+
                         users.append(user)
             return JsonResponse({'query':query,'category':cat,"users":users})
-            
-        
+
+
         bing_res = bing_query(cat + " " + query)
         mp_res = medlinePlus_query(cat + " " + query)
         # mp_res={}
@@ -289,7 +316,6 @@ def search_ajax(request):
             result["readability_score"] = temp["readability_score"]
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
-            # print result["summary"]
         for result in mp_res:
             result["summary"] = result["summary"].encode('ASCII','ignore')
             try:
@@ -309,23 +335,53 @@ def search_ajax(request):
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
 
-        data={'query':query,'category':cat, "bing_result":bing_res, 
+        print "readability: " + request.POST["readability_score"]
+        print "sentiment: " + request.POST["sentiment_score"]
+        print "subjectivity: " + request.POST["subjectivity_score"]
+        readabilityS = int(request.POST["readability_score"])
+        sentimentS = int(request.POST["sentiment_score"])
+        subjectivityS = int(request.POST["subjectivity_score"])
+        bing_res = sortResults(bing_res,readabilityS,sentimentS,subjectivityS)
+        mp_res = sortResults(mp_res,readabilityS,sentimentS,subjectivityS)
+        hf_res = sortResults(hf_res,readabilityS,sentimentS,subjectivityS)
+        data={'query':query,'category':cat, "bing_result":bing_res,
             "medlineplus_result":mp_res, "healthfinder_result":hf_res}
         return JsonResponse(data)
     return render(request, 'dashboard.html')
 
 
+def sortResults(results,readability,sentiment,subjectivity):
+    toBack = []
+    AllConditions = []
+    TwoConditions = []
+    OneCondition = []
+    for result in results:
+        conditionsMet = 0
+        if result["readability_score"] >= readability:
+            conditionsMet += 1
+        if result["sentiment_score"] > sentiment-10:
+            conditionsMet += 1
+        if result["subjectivity_score"] > subjectivity-10 and result["subjectivity_score"] < subjectivity+10:
+            conditionsMet += 1
+        if conditionsMet == 3:
+            AllConditions.append(result)
+        elif conditionsMet == 2:
+            TwoConditions.append(result)
+        elif conditionsMet == 1:
+            OneCondition.append(result)
+        else:
+            toBack.append(result)
+    return AllConditions + TwoConditions + OneCondition + toBack
 #content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
 
 def calculateScores(text):
     print text
-    text = smart_bytes(text, encoding='utf-8', strings_only=False, errors='replace')
+    text = smart_bytes(text,encoding="utf-8",strings_only=False,errors="replace")
     temp = TextBlob(text)
     toReturn = {}
     toReturn["readability_score"] = textstat.flesch_reading_ease(text)
-    toReturn["subjectivity_score"] = temp.sentiment.subjectivity
-    toReturn["sentiment_score"] = temp.sentiment.polarity
-    print toReturn["readability_score"],toReturn["subjectivity_score"],toReturn["sentiment_score"]
+    toReturn["subjectivity_score"] = temp.sentiment.subjectivity * 100
+    toReturn["sentiment_score"] = (temp.sentiment.polarity + 1) * 50
     return toReturn
 
 @login_required
@@ -337,7 +393,7 @@ def user_logout(request):
     return HttpResponseRedirect('/ehealth/')
 
 
-    
+
 def checkout_folder_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         folder=request.POST['folder']

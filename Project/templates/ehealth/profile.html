@@ -23,21 +23,33 @@
         </div>
         <div class="col-md-13 mt10 mb10 row">
             <ul class="nav nav-pills nav-stacked folder_list">
-              
               {% if folders %}
               {% for folder in folders %}
-                <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
+                <li role="presentation" class="folder col-md-9 pull-left"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
+                {% if folder.public %}
+                    <button type="button" class="btn btn-danger col-md-3 pull-right mt3 privacy_button text-justify">
+                      Public
+                    </button>
+                {% else %}
+                    <button type="button" class="btn btn-success col-md-3 pull-right mt3 privacy_button text-justify">
+                      Hidden
+                    </button>
+                {% endif %}
               {% endfor %}
+                <button id="save_folder_changes" type="button" class="btn btn-warning btn-block pull-right mt3 privacy_button text-center disabled">
+                  Save
+                </button>
               {% endif %}
             </ul>
         </div>
     </div>
     <div class="col-md-9 pull-right">
+        
         <div class="col-md-12">
             <div class="pull-right btn-group mtb20 headerBorder" role="group" id="header">
                 <!--<button class="btn btn-primary " role="button">History</button>-->
-                <a href="/ehealth/dashboard/" class="btn btn-primary">Dashboard</a>
-                <a href="/ehealth/logout/" class="btn btn-primary">Log out</a>
+                <a href="/ehealth/dashboard/" class="btn btn-primary {% if not logged_in %} disabled {% endif %} ">Dashboard</a>
+                <a href="/ehealth/logout/" class="btn btn-primary {% if not logged_in %} disabled {% endif %} ">Log out</a>
               <!--<button class="btn btn-primary " id="middle" role="button">Profile</button> -->
               <!--<button class="btn btn-primary " role="button">Log out</button> -->
             </div>
@@ -108,15 +120,38 @@
         {% if ownProfile == True %}
             {% if errors %}
                 {% for error in errors %}
-                    {{ error }}
+                    <div class="alert alert-danger" role="alert">{{ error }}</div>
                 {% endfor %}
             {% endif %}
             <form action="/ehealth/profile/{{ user }}/" method="post">
                 {% csrf_token %}
                 {{ update_form | bootstrap }}
-                <input class="btn btn-warning" type="submit" value="Update">
+                <input class="btn btn-warning mtb10" type="submit" value="Update">
             </form>
         {% endif %}
     </div> 
+    <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header" id="modal_header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              </div>
+              <div class="modal-body" id="modal_body">
+              </div>
+              <div class="modal-footer">
+                <button id="modal_close_button" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
 </div>
+
+
+
+<script src="{% static "js/buttons.js" %}"></script>
+<script src="{% static "js/delete_folder.js" %}"></script>
+<script src="{% static "js/show_folder_content.js" %}"></script>
+<script src="{% static "js/create_folder.js" %}"></script>
+
 {% endblock %}
