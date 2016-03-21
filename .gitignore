@@ -3,4 +3,5 @@
 *.db
 Project/.idea/
 Project/**/*.pyc
-Project/db.sqlite3
+db.sqlite3
+Project/ehealth/migrations

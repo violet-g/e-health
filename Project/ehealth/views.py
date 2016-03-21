@@ -186,10 +186,13 @@ def add_page_ajax(request):
             page = Page.objects.get(url=request.POST["link"])
         except:
             page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
-            temp = calculateScores(page.summary)
-            page.readability_score = temp["readability_score"]
-            page.sentiment_score = temp["sentiment_score"]
-            page.subjectivity_score = temp["subjectivity_score"]
+            try:
+                temp = calculateScores(page.summary)
+                page.readability_score = temp["readability_score"]
+                page.sentiment_score = temp["sentiment_score"]
+                page.subjectivity_score = temp["subjectivity_score"]
+            except:
+                pass
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
@@ -375,7 +378,6 @@ def sortResults(results,readability,sentiment,subjectivity):
 #content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
 
 def calculateScores(text):
-    print text
     text = smart_bytes(text,encoding="utf-8",strings_only=False,errors="replace")
     temp = TextBlob(text)
     toReturn = {}
