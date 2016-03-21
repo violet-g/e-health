@@ -26,7 +26,7 @@ def populate():
     bFolder = add_folder(user1,"boris\'s folder","true")
     zFolder = add_folder(user2,"zdravko\'s folder","false")
     jillFolder = add_folder(user3,"My serious Ailments","false")
-    jillFolder1 = add_folder(user3,"My not-so-serious Ailments","true")
+    jillFolder1 = add_folder(user3,"My other Ailments","true")
     bobFolder = add_folder(user4,"What sports do to you","true")
     bobFolder1 = add_folder(user4,"Problems","false")
     jenFolder = add_folder(user5,"My Folder","false")
