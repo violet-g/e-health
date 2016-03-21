@@ -170,9 +170,11 @@ def getProfileInformation(username,request):
         folders = Folder.objects.filter(user=searcher)
     elif ownProfile==False:
         folders = Folder.objects.filter(user=searcher,public=True)
+    own_folders = Folder.objects.filter(user=SessionSearcher)
     context_dict["folders"] = folders
     searcher_public = searcher.public
     context_dict["ViewedUser"] = [searcher.public,user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
+    context_dict["own_folders"] = own_folders
     return context_dict
 
 def profileRedirect(request):

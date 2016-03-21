@@ -23,8 +23,8 @@
         </div>
         <div class="col-md-13 mt10 mb10 row">
             <ul class="nav nav-pills nav-stacked folder_list">
-              {% if folders %}
-              {% for folder in folders %}
+              {% if own_folders %}
+              {% for folder in own_folders %}
                 <li role="presentation" class="folder col-md-9 pull-left"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
                 {% if folder.public %}
                     <button type="button" class="btn btn-danger col-md-3 pull-right mt3 privacy_button text-justify">
@@ -59,13 +59,12 @@
                 <div class="page-header">
                   <h1>Hello, {{ViewedUser.1}}!</h1>
                 </div>
-                
             {% elif ViewedUser.0 %}
                 <div class="page-header">
                   <h1>This is, {{ViewedUser.1}} 's profile</h1>
                 </div>
             {% else %}
-                <div class="jumbotron text-center mtb20">
+                <div class="page-header text-center mtb20">
                   <h2>This person does not wish to share their personal information.</h1>
                 </div>
             {% endif %}
@@ -131,6 +130,7 @@
         {% endif %}
     </div> 
     <!-- Modal -->
+    {% csrf_token %}
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -153,5 +153,6 @@
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/show_folder_content.js" %}"></script>
 <script src="{% static "js/create_folder.js" %}"></script>
+<script src="{% static "js/empty_modal.js" %}"></script>
 
 {% endblock %}

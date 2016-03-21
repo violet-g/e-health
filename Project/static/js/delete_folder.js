@@ -28,6 +28,7 @@ $(document).ready(function(){
                     console.log(data); // another sanity check
                     //On success show the data posted to server as a message
                     // location.reload();
+                    folder_object.next(".privacy_button").remove();
                     folder_object.remove();
                     $("#myModal").modal('hide');
                     $("#header").before("<div class='alert alert-warning mtb20 col-md-8' role='alert'>Folder was deleted!</div>");
