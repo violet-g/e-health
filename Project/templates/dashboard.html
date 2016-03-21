@@ -8,9 +8,40 @@
     <!-- menu on the left-->
     <div class="col-md-3 menu mtb20">
         <div class="col-md-13 col-md-offset-2 mb10">
+          <a href="/ehealth/dashboard/">
             <img src="{% static "img/logo.png" %}" class="img-responsive" alt="Responsive image">
+          </a>
         </div>
-        <div class="col-md-13">
+        <div class="row">
+          <div class="readability_score">
+            <!--<div class="col-sm-6">Readability</div>-->
+            <div class="input-group input-group-sm mtb10">
+              <span class="input-group-addon">Readability</span>
+              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
+              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
+              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
+            </div>
+          </div>
+          
+          <div class="subjectivity_score mtb10">
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">Subjectivity</span>
+              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
+              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
+              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
+            </div>
+          </div>
+            
+          <div class="sentiment_score mtb10">
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">Sentiment</span>
+              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
+              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
+              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-13 row">
             <div class="btn-group btn-group-justified" role="group">
                 <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
                 <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
@@ -19,7 +50,7 @@
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
-        <div class="col-md-13 mt10 mb10">
+        <div class="col-md-13 mt10 mb10 row">
             <ul class="nav nav-pills nav-stacked folder_list">
               
               {% if folders %}
@@ -35,7 +66,7 @@
         <!-- header-->
         <div class="col-md-12">
             <div class="pull-right btn-group mtb20 headerBorder" role="group" id="header">
-                <button class="btn btn-primary " role="button">History</button>
+                <!--<button class="btn btn-primary " role="button">History</button>-->
                 <a href="/ehealth/profile/{{user}}/" class="btn btn-primary">Profile</a>
                 <a href="/ehealth/logout/" class="btn btn-primary">Log out</a>
               <!--<button class="btn btn-primary " id="middle" role="button">Profile</button> -->

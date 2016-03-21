@@ -1,7 +1,8 @@
 from django.contrib import admin
-from ehealth.models import Searcher,Page,Folder,Category,Query,UserHistory,FolderPage,PageCategory,QueryCategory
+from ehealth.models import Searcher,Page,Folder,FolderPage
 
 admin.site.register(Searcher)
 admin.site.register(Page)
 admin.site.register(Folder)
-admin.site.register(Category)
+admin.site.register(FolderPage)
+
