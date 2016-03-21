@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from ehealth.forms import SearcherForm, LoginForm, RegisterForm,ChangeDetailsForm
+from ehealth.forms import LoginForm, RegisterForm,ChangeDetailsForm
 from ehealth.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from ehealth.bing_search import bing_query
 from ehealth.healthfinder_search import healthfinder_query
 from textstat.textstat import textstat
+from django.contrib.auth.models import User
 import codecs
 from textblob import *
 from django.utils.encoding import *
@@ -25,7 +26,9 @@ def index(request):
             login_form = LoginForm()
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
-                register(request.POST)
+                register(request.POST["username"],request.POST["email"],request.POST["password"],request.POST["first_name"],request.POST["last_name"])
+                user = authenticate(username = request.POST["username"].strip(),password = request.POST["password"].strip())
+                login(request,user)
                 return HttpResponseRedirect("dashboard/")
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
@@ -47,11 +50,11 @@ def index(request):
         'register_form': register_form,
     })
 
-def register(request):
-    newuser = User.objects.create_user(username=request.POST["username"],email= request.POST["email"],
-                                       password = request.POST["password"],first_name=request.POST["first_name"],last_name=request.POST["last_name"] )
+def register(username,email,password,first_name,last_name):
+    newuser = User.objects.create_user(username=username,email=email,
+                                       password = password,first_name = first_name,last_name = last_name)
     newuser.save()
-    newSearcher = Searcher(user = User.objects.get(username=request.POST["username"]))
+    newSearcher = Searcher(user = User.objects.get(username=username))
     newSearcher.save()
 
 
