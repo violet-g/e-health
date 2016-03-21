@@ -59,18 +59,14 @@ class RegisterForm(forms.ModelForm):
             userExists = None
         if userExists:
             raise forms.ValidationError("Username is already in use")
+        try:
+            emailTaken = User.objects.get(email = self.cleaned_data.get("email"))
+            emailTaken = True
+        except:
+            emailTaken = False
+        if emailTaken == True:
+            raise forms.ValidationError("Email is already in use.")
         return self.cleaned_data
-
-    def register(self,username,password,email,first_name,last_name):
-        newuser = User.objects.create_user(username=username, email=email, password = password,first_name=first_name,last_name=last_name )
-        newuser.save()
-
-    def save(self, commit=True):
-        self.register(self.cleaned_data.get("username"),self.cleaned_data.get("password"),self.cleaned_data.get("email"),self.cleaned_data.get("first_name"),self.cleaned_data.get("last_name"))
-        newSearcher = Searcher(user = User.objects.get(username=self.cleaned_data.get("username")))
-        if self.cleaned_data.get("picture"):
-            newSearcher.picture = self.cleaned_data.get("picture")
-        newSearcher.save()
 
     class Meta:
         model = Searcher
