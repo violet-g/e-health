@@ -46,7 +46,6 @@ class RegisterForm(forms.ModelForm):
     first_name = forms.CharField(label='first name')
     last_name = forms.CharField(label='last name')
     form_type = forms.CharField(widget=HiddenInput(), initial='register')
-    picture = forms.ImageField(required=False)
 
     def clean(self):
         password1 = self.cleaned_data.get('password')
@@ -68,8 +67,6 @@ class RegisterForm(forms.ModelForm):
     def save(self, commit=True):
         self.register(self.cleaned_data.get("username"),self.cleaned_data.get("password"),self.cleaned_data.get("email"),self.cleaned_data.get("first_name"),self.cleaned_data.get("last_name"))
         newSearcher = Searcher(user = User.objects.get(username=self.cleaned_data.get("username")))
-        if self.cleaned_data.get("picture"):
-            newSearcher.picture = self.cleaned_data.get("picture")
         newSearcher.save()
 
     class Meta:
