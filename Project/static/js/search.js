@@ -56,7 +56,7 @@ $(document).ready(function(){
                         email_p = "<p class='list-group-item-text mtb10'>"
                         
                         //for localhost
-                        link_a = link_a.replace("#", "localhost:8000/ehealth/" + users[i]["username"]);
+                        link_a = link_a.replace("#", "/ehealth/profile/" + users[i]["username"] + '/');
                         
                         //for Zdravko
                         // link_a = link_a.replace("#", "https://e-health-mega-qkiq-pich.c9users.io/ehealth/" + users[i]["username"]);
