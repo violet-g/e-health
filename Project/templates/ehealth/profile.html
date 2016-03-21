@@ -57,12 +57,37 @@
         {% if ViewedUser %}
             {% if ownProfile %}
                 <div class="page-header">
-                  <h1>Hello, {{ViewedUser.1}}!</h1>
+                  <h1>Hello, {{ViewedUser.first_name}}!</h1>
                 </div>
-            {% elif ViewedUser.0 %}
+                
+            <!--ViewedUser.0 is whether the data is public or not-->
+            {% elif ViewedUser.public %}
                 <div class="page-header">
-                  <h1>This is, {{ViewedUser.1}} 's profile</h1>
+                  <h1>This is {{ViewedUser.first_name}} 's profile</h1>
                 </div>
+                <!--<ul class="list-group">-->
+                <!--  <li class="list-group-item text-center">First name: <h2>{{ViewedUser.first_name}}</h2></li>-->
+                <!--  <li class="list-group-item text-center">Last name: <h2>{{ViewedUser.last_name}}</h2></li>-->
+                <!--  <li class="list-group-item text-center">Email: <h2>{{ViewedUser.email}}</h2></li>-->
+                <!--</ul>-->
+                <div class="col-md-6">
+                  <blockquote>First name: <h3>{{ViewedUser.first_name}}</h3></blockquote>
+                  <blockquote>Last name: <h3>{{ViewedUser.last_name}}</h3></blockquote>
+                  <blockquote>Email: <h3>{{ViewedUser.email}}</h3></blockquote>
+                </div>
+                {% if folders %}
+                  {% for folder in folders %}
+                    <div class="col-md-3">
+                      <img src="{% static "img/folder.png" %}" class="img-responsive center-block" alt="Responsive image">
+                      <p class="lead text-center">{{ folder.name }}</p>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div class="page-header col-md-6">
+                    <h1>This user has no public folders</h1>
+                  </div>
+                {% endif %}
+                
             {% else %}
                 <div class="page-header text-center mtb20">
                   <h2>This person does not wish to share their personal information.</h1>
@@ -125,9 +150,20 @@
             <form action="/ehealth/profile/{{ user }}/" method="post">
                 {% csrf_token %}
                 {{ update_form | bootstrap }}
-                <input class="btn btn-warning mtb10" type="submit" value="Update">
+                <input name="update_details_button" class="btn btn-warning mtb10" type="submit" value="Update">
             </form>
-        {% endif %}
+            <div class="page-header">
+              <h3> Do you wish to have your personal details hidden or public ?</h3>
+            </div>
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-success btn-lg privacy_details_button mtb20">
+                <input type="radio" name="options" id="option1" autocomplete="off" > Hidden
+              </label>
+              <label class="btn btn-danger btn-lg privacy_details_button mtb20">
+                <input type="radio" name="options" id="option2" autocomplete="off"> Public
+              </label>
+            </div>
+      {% endif %}
     </div> 
     <!-- Modal -->
     {% csrf_token %}
@@ -147,9 +183,8 @@
         </div>
 </div>
 
-
-
 <script src="{% static "js/buttons.js" %}"></script>
+<script src="{% static "js/profile.js" %}"></script>
 <script src="{% static "js/delete_folder.js" %}"></script>
 <script src="{% static "js/show_folder_content.js" %}"></script>
 <script src="{% static "js/create_folder.js" %}"></script>
