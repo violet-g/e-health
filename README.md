@@ -26,23 +26,12 @@ python populate_ehealth.py
 Now that that is done, you can run the server ( python manage.py runserver) and enter it.
 The population script has already created several users, which have some data in their profiles. They are as follows:
 
-username: jill
-password: jill
-
-username: bob
-password: bob
-
-username: jen
-password: jen
-
-username: zdravko
-password: zdravko
-
-username: boris
-password: boris
-
-username: gabriela
-password: gabriela
+- username: *jill*; password: jill
+- username: bob; password: bob
+- username: jen; password: jen
+- username: zdravko; password: zdravko
+- username: boris; password: boris
+- username: gabriela; password: gabriela
 
 That should be about everything you need to get the server up and running, as well as to get some pre-made users.
 
