@@ -189,6 +189,7 @@ $(document).ready(function(){
         var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
         //FIX IT this doesnt get the REAL source. 
         var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
+        source=$.trim(source.split("Source:")[1]); //remove the "Source:" part of the string
         
         var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
         if($.trim(folder)=="Choose folder")

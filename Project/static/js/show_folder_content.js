@@ -29,6 +29,7 @@ $("body").on('dblclick', ".folder",function(){
             {
                 var link_a,title_h4,summary_p,source_p,search_result;
                 var pages = data["pages"]
+                console.log(pages);
                 
                 var delete_page = "<button type='button' class='btn btn-primary btn-danger mtb20 delete_page_button'>Delete</button>"
                 
@@ -51,7 +52,7 @@ $("body").on('dblclick', ".folder",function(){
                     link_a = link_a.replace("#",pages[p]['url']);
                     title_h4 += pages[p]['title'] + "</h4>";
                     summary_p += pages[p]['summary'] + "</p>";
-                    source_p += "Source: %s"%(pages[p]['source']) + "</p>";
+                    source_p += "Source: " + (pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
                     var scores = pages[p]['readability_score'] + " " +
                         pages[p]['subjectivity_score'] + " " + 

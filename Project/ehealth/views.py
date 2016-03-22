@@ -198,9 +198,9 @@ def profileRedirect(request):
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
         try:
-            page = Page.objects.get(url=request.POST["link"])
+            page = Page.objects.get(url=request.POST["link"].strip())
         except:
-            page = Page(title=request.POST["title"],source=request.POST["source"],summary=request.POST["summary"],url=request.POST["link"],times_saved=0)
+            page = Page(title=request.POST["title"].strip(),source=request.POST["source"].strip(),summary=request.POST["summary"].strip(),url=request.POST["link"].strip(),times_saved=0)
             try:
                 temp = calculateScores(page.summary)
                 page.readability_score = temp["readability_score"]
@@ -211,12 +211,12 @@ def add_page_ajax(request):
         user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-
+        print "summary",page.source
         page.times_saved += 1
         # print page.summary
         page.save()
 
-        folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
+        folder = Folder.objects.get(name=request.POST["folder"].strip(),user=searcher)
         try:
             fp = FolderPage.objects.get(page=page,folder=folder)
             page.times_saved -= 1
@@ -462,6 +462,7 @@ def checkout_folder_ajax(request):
                 for p in f.pages.all():
                     # print p.serialise()
                     pages.append(p.serialise())
+                    print "pages sources",p.source
         # print "pages", json.dumps(pages[0])
         return JsonResponse({"folder":folder,"pages":pages})
         # return JsonResponse({"folder":folder,"pages":[]})
