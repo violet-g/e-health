@@ -57,16 +57,26 @@ $(document).ready(function(){
                         $(".alert").fadeOut(1750, function(){$(this).remove()});
                     }
                     $("#myModal").modal('hide');
-                    var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
-                                    fname +
-                                    "</a></li>"
-                    // location.reload();
-                    // $('#new_folder_modal').modal('hide');
-                    console.log(new_folder);
-                    console.log($("#folder_list").children());
-                    $(".folder_list").append(new_folder);
-                    var new_folder_choice = "<li class='folder_choice'><a href='#!'>" + fname + "</a></li>"
-                    $(".folder_options").append(new_folder_choice);
+                    if(window.location.pathname.indexOf("profile") == -1)
+                    {
+                        var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
+                                        fname +
+                                        "</a></li>"
+                        // location.reload();
+                        // $('#new_folder_modal').modal('hide');
+                        console.log(new_folder);
+                        console.log($("#folder_list").children());
+                        $(".folder_list").append(new_folder);
+                        var new_folder_choice = "<li class='folder_choice'><a href='#!'>" + fname + "</a></li>"
+                        $(".folder_options").append(new_folder_choice);
+                    }
+                    else
+                    {
+                        var new_folder = "<li role='presentation' class='folder col-md-9 pull-left'><a class='nofocus' href='#!' >" + fname + "</a></li>";
+                        var new_privacy_button = "<button type='button' class='btn btn-success col-md-3 pull-right mt3 privacy_button text-justify'> Hidden </button>";
+                        $("#save_folder_changes").before(new_folder);
+                        $("#save_folder_changes").before(new_privacy_button);
+                    }
                 },
                 
                 // handle a non-successful response
