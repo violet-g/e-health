@@ -16,11 +16,11 @@ def populate():
         if user.is_staff != True:
             user.delete()
 
-    user1 = add_searcher("boris","boris@test.com","boris","boris","lazarov")
-    user2 = add_searcher("zdravko","zdravko@test.com","zdravko","zdravko","ivanov")
-    user3 = add_searcher("jill","jill@mail.com","jill","jill","valentine")
-    user4 = add_searcher("bob","bob@mail.com","bob","bob","ross")
-    user5 = add_searcher("jen","jen@mail.com","jen","jen","katarn")
+    user1 = add_searcher("boris","boris@test.com","boris","boris","lazarov","true")
+    user2 = add_searcher("zdravko","zdravko@test.com","zdravko","zdravko","ivanov","false")
+    user3 = add_searcher("jill","jill@mail.com","jill","jill","valentine","true")
+    user4 = add_searcher("bob","bob@mail.com","bob","bob","ross","false")
+    user5 = add_searcher("jen","jen@mail.com","jen","jen","katarn","true")
 
 
     bFolder = add_folder(user1,"boris\'s folder","true")
@@ -83,10 +83,11 @@ def add_folder(user,name,public):
     newFolder.save()
     return newFolder
 
-def add_searcher(username,email,password,first_name,last_name):
+def add_searcher(username,email,password,first_name,last_name,public):
         newuser = User.objects.create_user(username=username, email=email, password = password,first_name=first_name,last_name=last_name )
         newuser.save()
         newSearcher = Searcher(user = User.objects.get(username=username))
+        newSearcher.public = public
         newSearcher.save()
         return newSearcher
 
