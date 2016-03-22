@@ -21,7 +21,7 @@ def populate():
     user3 = add_searcher("jill","jill@mail.com","jill","jill","valentine","true")
     user4 = add_searcher("bob","bob@mail.com","bob","bob","ross","false")
     user5 = add_searcher("jen","jen@mail.com","jen","jen","katarn","true")
-
+    user6 = add_searcher("gabriela","gabriela@test.com","gabriela","gabriela","georgieva","true")
 
     bFolder = add_folder(user1,"boris\'s folder","true")
     zFolder = add_folder(user2,"zdravko\'s folder","false")
@@ -30,6 +30,7 @@ def populate():
     bobFolder = add_folder(user4,"What sports do to you","true")
     bobFolder1 = add_folder(user4,"Problems","false")
     jenFolder = add_folder(user5,"My Folder","false")
+    gFolder = add_folder(user6,"gabi's folder","true")
 
 
     page = add_page("Eye Infections","MedlinePlus","Your eyes can get infections from bacteria, fungi, or viruses. Eye infections can occur in different parts of the eye and can affect just one eye or both. Two common eye infections are	Conjunctivitis - also known as pinkeye. Conjunctivitis is often due to an infection. Children frequently get it, and it is very contagious. Stye - a bump on the eyelid that happens when bacteria from your skin get into the hair follicle of an eyelash.Symptoms of eye infections may include redness, itching, swelling, discharge, pain, or problems with vision. Treatment depends on the cause of the infection and may include compresses, eye drops, creams, or antibiotics.",
@@ -70,7 +71,8 @@ def populate():
     folderContent8 = add_pageFolder(page4,bobFolder)
     folderContent9 = add_pageFolder(page5,bobFolder1)
     folderContent10 = add_pageFolder(page6,jenFolder)
-
+    folderContent11 = add_pageFolder(page5,gFolder)
+    folderContent12 = add_pageFolder(page7,gFolder)
 
 def add_page(title,source,summary,url,readability_score,sentiment_score,
              subjectivity_score,times_saved):
