@@ -9,7 +9,7 @@ SETUP GUIDE:
 Once you are in a fresh virtual environment, you will want to clone the project. To do this, go to the directory (in cmd) in which you wish
 to place the project and run the following command:
 
-- https://github.com/violet-g/e-health.git
+- git clone https://github.com/violet-g/e-health.git
 
 Afterwards, go to the directory, in which the .git directory is located (e-health). From there, go to Project.
 Now, you should install all of the packages that the project requires in order to work properly. Please enter the following command:
