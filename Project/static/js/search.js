@@ -187,7 +187,9 @@ $(document).ready(function(){
         // var folder = $(".folder_choice_button").text();
         var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
         var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
+        //FIX IT this doesnt get the REAL source. 
         var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
+        
         var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
         if($.trim(folder)=="Choose folder")
             return
