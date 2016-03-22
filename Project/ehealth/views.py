@@ -149,6 +149,7 @@ def getProfileInformation(username,request):
     update_form = ChangeDetailsForm()
     context_dict["update_form"] = update_form
     context_dict["logged_in"]=True
+    own_folders=[]
     try:
         user = User.objects.get(username=username)
         searcher = Searcher.objects.get(user=user)
@@ -170,9 +171,19 @@ def getProfileInformation(username,request):
         folders = Folder.objects.filter(user=searcher)
     elif ownProfile==False:
         folders = Folder.objects.filter(user=searcher,public=True)
+    
     context_dict["folders"] = folders
     searcher_public = searcher.public
-    context_dict["ViewedUser"] = [searcher.public,user.first_name,user.last_name,user.email,user.password,searcher.website,searcher.picture]
+    context_dict["ViewedUser"] = {"public":searcher.public,
+                                "first_name":user.first_name,
+                                "last_name":user.last_name,
+                                "email":user.email,
+                                }
+    try:
+        own_folders = Folder.objects.filter(user=SessionSearcher)
+        context_dict["own_folders"] = own_folders
+    except:
+        pass
     return context_dict
 
 def profileRedirect(request):
@@ -216,9 +227,45 @@ def add_page_ajax(request):
 
 
 def test_ajax(request):
-    if request.method=='GET':
+    if request.method=='POST' and request.is_ajax():
         return HttpResponse("MAINA")
     return HttpResponse("No maina")
+
+def save_folder_privacy_ajax(request):
+    if request.method=='POST' and request.is_ajax():
+        user = request.user
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+        for f in json.loads(request.POST['folders']):
+            print f['folder'],f['privacy']
+            folder = Folder.objects.get(user=searcher, name=f['folder'])
+            folder.public= True if f['privacy']=="Public" else False
+            folder.save()
+        return JsonResponse({"maina":"maina"})
+    return HttpResponse("No maina")
+    
+
+def privacy_details_ajax(request):
+    user = request.user
+    print user
+    try:
+        user=User.objects.get(username=user)
+        searcher=Searcher.objects.get(user=user)
+    except:
+        searcher=Searcher() # create an empty searcher - that's fine because we would only need the public field
+                            # and it breaks when the user is not logged in
+        
+    if request.method=='POST' and request.is_ajax():
+        if request.POST['publicity']=="Public":
+            searcher.public=True
+        elif request.POST['publicity']=="Hidden":
+            searcher.public=False
+        searcher.save()
+        return HttpResponse('success')
+    if request.method=='GET':
+        return JsonResponse({"public":searcher.public})
+
+
 
 def new_folder_ajax(request):
     fname=None

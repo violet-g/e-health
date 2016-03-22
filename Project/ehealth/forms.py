@@ -81,7 +81,6 @@ class ChangeDetailsForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': "Please enter your new e-mail"}),label='e-mail',required=False)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated forename"}), label='First name',required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated sirname"}) ,label='Last name',required=False)
-
     # def clean(self):
     #     try:
     #         emailTaken = User.objects.get(email=self.cleaned_data.get("email"))

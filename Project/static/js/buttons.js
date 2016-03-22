@@ -18,4 +18,12 @@ $(document).ready(function(){
             $(this).text("Public");
         $("#save_folder_changes").removeClass("disabled");
     });
+    
+    // $(".public_details_button").click(function(){
+    //     // $(".public_details_button, .hidden_details_button").removeClass("active");
+    //     $(".public_details_button").button('toggle');
+    //     $(".hidden_details_button").button('toggle');
+    //     // $(this).button('toggle');
+    //     // $(this).addClass('active');
+    // })
 })
