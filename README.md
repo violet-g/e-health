@@ -1,9 +1,9 @@
 Git User ID to Student ID + Name mapping:
 
-Boris Lazarov <boris.lazaroff@gmail.com>  - Boris Lazarov 2122255L
-mega_qkiq_pich <zdravkozzz@mail.bg> - Zdravko Ivanov  2144328I
-nstamen0vah - Nina Hristozova 2143591h
-violet-g - Gabriela Georgiva
+- Boris Lazarov <boris.lazaroff@gmail.com>  - Boris Lazarov 2122255L
+- mega_qkiq_pich <zdravkozzz@mail.bg> - Zdravko Ivanov  2144328I
+- nstamen0vah - Nina Hristozova 2143591h
+- violet-g <gabriella.georgieva17@gmail.com> - Gabriela Georgiva 2130120g
 
 SETUP GUIDE:
 Once you are in a fresh virtual environment, you will want to clone the project. To do this, go to the directory (in cmd) in which you wish
@@ -40,6 +40,9 @@ password: zdravko
 
 username: boris
 password: boris
+
+username: gabriela
+password: gabriela
 
 That should be about everything you need to get the server up and running, as well as to get some pre-made users.
 
