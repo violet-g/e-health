@@ -3,13 +3,20 @@
 $("body").on('dblclick', ".folder",function(){
     var folder = $(this).text();
     // console.log(folder);
-    
+    var split_url = window.location.pathname.split("/");
+    var user=split_url.indexOf("profile");
+    if(user!=-1)
+        user = split_url[split_url.indexOf("profile")+1]
+    else
+        user=""
+    console.log();
     console.log("test");
     $.ajax({
         url : '/ehealth/checkout_folder_ajax/', // the endpoint,commonly same url
         type : "POST", // http method
         data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 
-                folder:folder
+                folder:folder,
+                user:split_url[split_url.indexOf("profile")+1],
             }, // data sent with the post request
 
         // handle a successful response
@@ -46,8 +53,10 @@ $("body").on('dblclick', ".folder",function(){
                     summary_p += pages[p]['summary'] + "</p>";
                     source_p += "Source: %s"%(pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
-                    
-                    cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + delete_page + "</div>";
+                    var scores = pages[p]['readability_score'] + " " +
+                        pages[p]['subjectivity_score'] + " " + 
+                        pages[p]['sentiment_score'] + " "
+                    cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + delete_page + scores + "</div>";
                     
                     $("#modal_body").append(cont);
                     

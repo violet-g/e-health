@@ -133,7 +133,8 @@ def profile(request,username):
         else:
             # print validate_email(request.POST['email'])
             context_dict = getProfileInformation(username,request)
-            return HttpResponseRedirect('/ehealth/profile/', context_dict)
+            context_dict["errors"] = ["Form is not valid, please try again"]
+            return render(request, 'ehealth/profile.html',context_dict)
     elif request.method=="GET":
         context_dict = getProfileInformation(username,request)
         #update_form = ChangeDetailsForm()
@@ -450,6 +451,8 @@ def checkout_folder_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         folder=request.POST['folder']
         user = request.user
+        if(request.POST["user"].strip()):
+            user=request.POST["user"]
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
         pages=[]

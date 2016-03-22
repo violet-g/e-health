@@ -25,20 +25,28 @@
             <ul class="nav nav-pills nav-stacked folder_list">
               {% if own_folders %}
               {% for folder in own_folders %}
-                <li role="presentation" class="folder col-md-9 pull-left"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
-                {% if folder.public %}
-                    <button type="button" class="btn btn-danger col-md-3 pull-right mt3 privacy_button text-justify">
-                      Public
-                    </button>
+                {% if ownProfile %}
+                  <li role="presentation" class="folder col-md-9 pull-left"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
+                  {% if folder.public %}
+                      <button type="button" class="btn btn-danger col-md-3 pull-right mt3 privacy_button text-justify">
+                        Public
+                      </button>
+                  {% else %}
+                      <button type="button" class="btn btn-success col-md-3 pull-right mt3 privacy_button text-justify">
+                        Hidden
+                      </button>
+                  {% endif %}
+                
                 {% else %}
-                    <button type="button" class="btn btn-success col-md-3 pull-right mt3 privacy_button text-justify">
-                      Hidden
-                    </button>
+                  <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
                 {% endif %}
               {% endfor %}
-                <button id="save_folder_changes" type="button" class="btn btn-warning btn-block pull-right mt3  text-center disabled">
-                  Save
-                </button>
+              
+                {% if ownProfile %}
+                  <button id="save_folder_changes" type="button" class="btn btn-warning btn-block pull-right mt3  text-center disabled">
+                    Save
+                  </button>
+                {% endif %}
               {% endif %}
             </ul>
         </div>
@@ -77,9 +85,9 @@
                 </div>
                 {% if folders %}
                   {% for folder in folders %}
-                    <div class="col-md-3">
+                    <div class="col-md-3 folder">
                       <img src="{% static "img/folder.png" %}" class="img-responsive center-block" alt="Responsive image">
-                      <p class="lead text-center">{{ folder.name }}</p>
+                      <p class="lead text-center noselect">{{ folder.name }}</p>
                     </div>
                   {% endfor %}
                 {% else %}
