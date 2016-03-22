@@ -144,11 +144,11 @@ $(document).ready(function(){
                         summary_p += sources[s][i]['summary'] + "</p>";
                         source_p += "Source: "+ s + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
-                        var scores = sources[s][i]['readability_score'] + " " +
-                        sources[s][i]['subjectivity_score'] + " " + 
-                        sources[s][i]['sentiment_score'] + " "
+                        // var scores = sources[s][i]['readability_score'] + " " +
+                        // sources[s][i]['subjectivity_score'] + " " + 
+                        // sources[s][i]['sentiment_score'] + " "
                         
-                        cont+= "<div class='col-md-9 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + scores + "</div>"
+                        cont+= "<div class='col-md-9 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"
                         // $("#search_results").append(link_a);
                         // $("#search_results").append(add_to_folder);
                         $("#search_results").append(cont);

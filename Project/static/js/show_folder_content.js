@@ -54,9 +54,9 @@ $("body").on('dblclick', ".folder",function(){
                     summary_p += pages[p]['summary'] + "</p>";
                     source_p += "Source: " + (pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
-                    var scores = pages[p]['readability_score'] + " " +
-                        pages[p]['subjectivity_score'] + " " + 
-                        pages[p]['sentiment_score'] + " "
+                    var scores = "<div>"+parseInt($.trim(pages[p]['readability_score'])) + " " +
+                        parseInt($.trim(pages[p]['subjectivity_score'])) + " " + 
+                        parseInt($.trim(pages[p]['sentiment_score'])) + " " + "</div>"
                     cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + delete_page + scores + "</div>";
                     
                     $("#modal_body").append(cont);
