@@ -20,8 +20,10 @@ from django.core.validators import validate_email
 
 
 def index(request):
+    #if the user is sending a post request
     if request.method == 'POST':
         form_type = request.POST.get('form_type').encode('UTF-8')
+        #if the user is trying to register, we check if the form is valid, and if it is, we register the user and log him in.
         if form_type == 'register':
             login_form = LoginForm()
             register_form = RegisterForm(request.POST)
@@ -36,9 +38,13 @@ def index(request):
             if login_form.is_valid():
                 username = request.POST["username"].strip()
                 password = request.POST["password"].strip()
-                user = authenticate(username=username,password=password)
-                login(request,user)
-                return HttpResponseRedirect("dashboard/")
+                #if a user successfuly registers as AnonymousUser, he can go to profiles and automatically log himself in, which we dont want
+                if username != "AnonymousUser":
+                    user = authenticate(username=username,password=password)
+                    login(request,user)
+                    return HttpResponseRedirect("dashboard/")
+                else:
+                    return HttpResponseRedirect("/ehealth/")
         else:
             return HttpResponse('Unknown error occurred.')
     else:
@@ -50,6 +56,7 @@ def index(request):
         'register_form': register_form,
     })
 
+#an extra function, used in the index function, when a user is registering
 def register(username,email,password,first_name,last_name):
     newuser = User.objects.create_user(username=username,email=email,
                                        password = password,first_name = first_name,last_name = last_name)
@@ -58,38 +65,35 @@ def register(username,email,password,first_name,last_name):
     newSearcher.save()
 
 
+#finds the information about the currently logged in user as well as the most saved pages in general.
 def dashboard(request):
     context_dict={}
     try:
-        user = request.user     #get the cureent logged in user
-
-        #get them from the User table and search for them in the searcher table,
-        # since the user is of type django User whatever and the search key needs to be of the same type
+        user = request.user
         user=User.objects.get(username=user)
         searcher=Searcher.objects.get(user=user)
-
-        #now a related_name is added("folders"), hence there is a backwards relationship and the next line is actually legal
         folders = searcher.folders.all()
         context_dict["folders"]=folders
     except:
+        #if it can't find the user, we assume he is not properly logged in and redirect him back to the starting page
         return HttpResponseRedirect("/ehealth/")
-        #return HttpResponse("something went wrong")
     try:
-        #Page.objects.annotate(Count("folders")).order_by("-folders__count")
         topPages = Page.objects.order_by("times_saved")[:15]
         context_dict["pages"] = topPages
-
     except:
-        print "stuff broke"
+        #even if the top pages aren't found, the user can still use the website for its intended purpose, no need for redirecting
+        print "Can't find top pages"
     return render(request, 'dashboard.html',context_dict)
 
 
 
-#on all except statements needs to redirect to dashboard
+#if the user is sending a GET request, we get and display the information of the profile he is searching for
 def profile(request,username):
     if request.method=="POST":
+        #if we get here, it means that the user is trying to change his profile information
         form = ChangeDetailsForm(request.POST)
         if form.is_valid():
+            #if the form he has submitted is valid, check whether the two password fields match, the email is not taken
             errors = []
             user = request.user
             user=User.objects.get(username=user)
@@ -110,40 +114,30 @@ def profile(request,username):
                     errors += ["Email is already taken"]
                 else:
                     user.email = request.POST["email"]
-            # if request.POST["email"]:
-            #     try:
-            #         User.objects.get(email=request.POST["email"])
-            #         errors += ["Email is already in use"]
-            #     except:
-            #         user.email = request.POST["email"]
             if request.POST["first_name"]:
                 user.first_name = request.POST["first_name"]
             if request.POST["last_name"]:
                 user.last_name = request.POST["last_name"]
             if errors == []:
+                #if there are no errors, save the changes made to the user profile and return him to his profile
                 user.save()
                 return HttpResponseRedirect("/ehealth/dashboard/")
             else:
+                #if there are errors, return him back to the profile page with the form for information change
                 context_dict = getProfileInformation(username,request)
                 context_dict["errors"] = errors
-            #if form.errors:
-            #    context_dict["errors"] = form.errors
-            #    print form.errors
                 return render(request, 'ehealth/profile.html',context_dict)
         else:
-            # print validate_email(request.POST['email'])
+            #if the form isnt valid, return the user back to the profile page with the information change form
             context_dict = getProfileInformation(username,request)
             context_dict["errors"] = ["Form is not valid, please try again"]
             return render(request, 'ehealth/profile.html',context_dict)
     elif request.method=="GET":
         context_dict = getProfileInformation(username,request)
-        #update_form = ChangeDetailsForm()
-        #context_dict["update_form"] = update_form
         return render(request,"ehealth/profile.html",context_dict)
-    #    except:
-           # return HttpResponse("Fail")
-    #        return HttpResponseRedirect("/ehealth/")
 
+#this function is used in the profile function. Its purpose is to get the information about the user that is logged in,
+#the profile information that the user is trying to access, as well as whether he is trying to view his own profile or not.
 def getProfileInformation(username,request):
     ownProfile = True
     context_dict={}
@@ -187,6 +181,8 @@ def getProfileInformation(username,request):
         pass
     return context_dict
 
+#this function is used only to redirect an user to their profile, in case they type /ehealth/profile/ in the url field
+#instead of ehealth/profile/profilename
 def profileRedirect(request):
     try:
         user = request.user
@@ -195,6 +191,7 @@ def profileRedirect(request):
     except:
         return HttpResponseRedirect("/ehealth/")
 
+#This function adds a page to a user-made folder
 def add_page_ajax(request):
     if request.method=="POST" and request.is_ajax():
         try:
@@ -267,7 +264,7 @@ def privacy_details_ajax(request):
         return JsonResponse({"public":searcher.public})
 
 
-
+#This function for adding a new user profile
 def new_folder_ajax(request):
     fname=None
     if request.method == 'POST' and request.is_ajax():
@@ -323,11 +320,6 @@ def delete_page_ajax(request):
 
 
 
-#readability_score
-#sentiment_score
-#subjectivity_score
-#dictionary
-
 def search_ajax(request):
     if request.method == 'POST' and request.is_ajax():
         cat=request.POST['category']
@@ -355,11 +347,9 @@ def search_ajax(request):
 
         bing_res = bing_query(cat + " " + query)
         mp_res = medlinePlus_query(cat + " " + query)
-        # mp_res={}
         hf_res = healthfinder_query(cat + " " + query)
-        # res.extend(healthfinder_query(cat + " " + query))
-        # print hf_res
-        # data={'query':query,'category':cat, "bing_result":bing_res}
+
+        #sort results based on how many conditions they meet
         for result in bing_res:
             result["summary"] = result["summary"].encode('ASCII','ignore')
             try:
@@ -470,95 +460,3 @@ def checkout_folder_ajax(request):
 
 
 
-
-
-
-    #CODE GRAVEYARD
-
-
-
-#@login_required()
-#def update_profile(request):
-#    if request.method=="POST":
-#        form = ChangeDetailsForm(request.POST)
-#        if form.is_valid():
-#            user = request.user     #get the cureent logged in user
-        #get them from the User table and search for them in the searcher table,
-        # since the user is of type django User whatever and the search key needs to be of the same type
-#            user=User.objects.get(username=user)
-#            searcher=Searcher.objects.get(user=user)
-#            if request.POST["password"]:
-#                user.set_password(request.POST["password"])
-                #user.update(password=request.get("password"))
-                #user.password = request.get("password")
-                #user.password.save()
-            # THE EMAIL PART WORKS. REWORK EVERYTHING ELSE LIKE IT
-#            if request.POST["email"]:
-                #HttpResponse("new e-mail found")
- #               #user.update(email=request.get("email"))
-  #              user.email = request.POST["email"]
-                #user.save should be at the end of the function
-    #            #user.save()
-
-
-     #       if request.POST["first_name"]:
-     #           user.first_name = request.POST["first_name"]
-     #       if request.POST["last_name"]:
-     #           user.last_name = request.POST["last_name"]
-                #user.update(last_name=request.get("last_name"))
-     #       user.save()
-     #       return HttpResponseRedirect("/ehealth/dashboard/")
-     #   else:
-     #       return render(request, 'ehealth/profile.html',{
-     #           "update_form":form,
-      #      })
-
-#def search()
-
-# Create your views here.
-#def register(request):
-#    if request.method == "POST":
-#        errors = []
-#        form = SearcherForm(request.POST)
-#        if form.is_valid():
-#            Username = request.POST["username"]
-#            if User.objects.filter(username=request.POST["username"]).exists() == True:
-#                errors.append("A user with that username already exists")
-#                form = SearcherForm
-#                return render(request,'ehealth/register.html',{"errors":errors,"form":form})
-#            surname = request.POST["surname"]
-#            email = request.POST["email"]
-#            password = request.POST["password"]
-#            forename = request.POST["forename"]
-#            newuser = User.objects.create_user(username=Username, email=email, password = password,first_name=forename,last_name=surname )
-#            newuser.save()
-#            newSearcher = Searcher.objects.create(user=newuser)
-#            if request.POST["picture"]:
-#                newSearcher.picture = request.POST["picture"]
-#            if request.POST["website"]:
-#                newSearcher.website = request.POST["website"]
-#            return HttpResponse("Done")
-#        else:
-#            print form.errors
-#    else:
-#        form = SearcherForm()
-#    return render(request, 'ehealth/register.html', {"form": form})
-
-
-#def user_login(request):
-#    if request.method == 'POST':
-#        username = request.POST.get('username')
-#        password = request.POST.get('password')
-#        user = authenticate(username=username, password=password)
-#        if user:
-#            if user.is_active:
-#                login(request,user)
-#                return HttpResponseRedirect('/ehealth/')
-#            else:
-#                return HttpResponse("Your account is disabled.")
-#        else:
-#            print "Invalid login details: {0}, {1}".format(username, password)
-#           return HttpResponse("Invalid login details supplied.")
-
-#    else:
-#        return render(request,'ehealth/login.html', {})
