@@ -4,6 +4,12 @@
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />
+
+<link href="{% static "Sliders/jquery-ui.css" %}" rel="stylesheet">
+<script src="{% static "Sliders/external/jquery/jquery.js" %}"></script>
+<script src="{% static "Sliders/jquery-ui.js" %}"></script>
+<script src="{% static "Sliders/sliders.js" %}"></script>
+
 <div class="container">
     <!-- menu on the left-->
     <div class="col-md-3 menu mtb20">
@@ -12,36 +18,32 @@
             <img src="{% static "img/logo.png" %}" class="img-responsive" alt="Responsive image">
           </a>
         </div>
-        <div id="slider1" class="slider"></div>
-        <div class="row">
-          <div class="readability_score">
-            <!--<div class="col-sm-6">Readability</div>-->
-            <div class="input-group input-group-sm mtb10">
-              <span class="input-group-addon">Readability</span>
-              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
-              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
-              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
-            </div>
-          </div>
-          
-          <div class="subjectivity_score mtb10">
-            <div class="input-group input-group-sm">
-              <span class="input-group-addon">Subjectivity</span>
-              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
-              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
-              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
-            </div>
-          </div>
-            
-          <div class="sentiment_score mtb10">
-            <div class="input-group input-group-sm">
-              <span class="input-group-addon">Sentiment</span>
-              <span class="input-group-addon glyphicon glyphicon-chevron-left" id="sizing-addon2"></span>
-              <input id="readability_score_input" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
-              <span class="input-group-addon glyphicon glyphicon-chevron-right" id="sizing-addon2"></span>
-            </div>
-          </div>
+        
+        <div class="mtb10">
+          <label for="r_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Readibility score: </label>
+          <input type="text" class="col-md-4" id="r_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
         </div>
+        <div id="slider1" class="col-md-12 mb20"></div>
+        
+                
+        <div class="mtb10">
+          <label for="s_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Sensitivity score: </label>
+          <input type="text" class="col-md-4" id="s_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
+        </div>
+        <div id="slider2" class="col-md-12 mb20"></div>
+        
+        <div class="mtb10">
+          <label for="ss_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Sentiment score: </label>
+          <input type="text" class="col-md-4" id="ss_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
+        </div>
+        <div id="slider3" class="col-md-12 mb20"></div>
+        
+        <!--<div class="mtb10">-->
+        <!--  <label for="results_from_search" class="col-md-8" style="font-family: serif;font-size: 17px;">Results from API: </label>-->
+        <!--  <input type="text" class="col-md-4" id="results_from_search" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>-->
+        <!--</div>-->
+        <!--<div id="slider4" class="col-md-12 mb20"></div>-->
+        
         <div class="col-md-13 row">
             <div class="btn-group btn-group-justified" role="group">
                 <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
@@ -232,9 +234,5 @@
 <script src="{% static "js/create_folder.js" %}"></script>
 <script src="{% static "js/dashboard.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
-<link href="{% static "Sliders/jquery-ui.css" %}" rel="stylesheet">
-<script src="{% static "Sliders/external/jquery/jquery.js" %}"></script>
-<script src="{% static "Sliders/jquery-ui.js" %}"></script>
-<script src="{% static "js/slider.js" %}"></script>
 
 {% endblock %}

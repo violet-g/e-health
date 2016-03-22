@@ -28,9 +28,10 @@ $(document).ready(function(){
             data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                     query:query,
                     category:category,
-                    readability_score:70,
-                    sentiment_score:80,
-                    subjectivity_score:40,
+                    readability_score:$("#r_score").val(),
+                    sentiment_score:$("#s_score").val(),
+                    subjectivity_score:$("#ss_score").val(),
+                    number_of_results:$("results_from_search").val(),
                 }, // data sent with the post request
 
             // handle a successful response
