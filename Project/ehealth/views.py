@@ -215,8 +215,9 @@ def add_page_ajax(request):
         page.times_saved += 1
         # print page.summary
         page.save()
-
-        folder = Folder.objects.get(name=request.POST["folder"],user=searcher)
+        print request.POST["folder"]
+        print searcher
+        folder = Folder.objects.get(name=request.POST["folder"].strip(),user=searcher)
         try:
             fp = FolderPage.objects.get(page=page,folder=folder)
             page.times_saved -= 1
