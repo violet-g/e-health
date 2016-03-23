@@ -18,7 +18,7 @@ Now, you should install all of the packages that the project requires in order t
 
 Now that that is out of the way, to finish the setup as well as to populate the database, please run the following commands:
 
-- python manage.py makemigrations
+- python manage.py makemigrations ehealth
 - python manage.py sqlmigrate ehealth 0001
 - python manage.py migrate
 - python populate_ehealth.py
