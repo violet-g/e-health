@@ -4,7 +4,7 @@ $(document).ready(function(){
         var folder = $.trim($(".active.folder").text());
         if(folder=="")
         {
-            console.log(folder);
+            // console.log(folder);
             return;
         }
         console.log(folder);

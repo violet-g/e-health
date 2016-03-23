@@ -76,11 +76,12 @@ class RegisterForm(forms.ModelForm):
 
 #rework
 class ChangeDetailsForm(forms.Form):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Enter your new password"}),label="Change password",required=False)
-    password_retype = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Please re-enter your new password"}),required=False)
-    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': "Please enter your new e-mail"}),label='e-mail',required=False)
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated forename"}), label='First name',required=False)
     last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "Please enter your updated sirname"}) ,label='Last name',required=False)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': "Please enter your new e-mail"}),label='e-mail',required=False)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Enter your new password"}),label="Change password",required=False)
+    password_retype = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Please re-enter your new password"}),required=False)
+    
     # def clean(self):
     #     try:
     #         emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
@@ -99,7 +100,7 @@ class ChangeDetailsForm(forms.Form):
     #             raise forms.ValidationError("Please enter password in both fields")
 
     #     return self.cleaned_data
-
+    
 
 
 

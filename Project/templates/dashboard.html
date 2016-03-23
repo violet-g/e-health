@@ -3,12 +3,10 @@
 {% load staticfiles %}
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />
-
-<link href="{% static "Sliders/jquery-ui.css" %}" rel="stylesheet">
+<!--<link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />-->
 <!--<script src="{% static "Sliders/external/jquery/jquery.js" %}"></script>-->
-<script src="{% static "Sliders/jquery-ui.js" %}"></script>
-<script src="{% static "Sliders/sliders.js" %}"></script>
+
+
 
 <div class="container">
     <!-- menu on the left-->
@@ -158,17 +156,19 @@
             {% if pages %}
             {% for page in pages %}
               <div class="row {{page.source}} ">
-                <div class='col-md-3 mtb20 pull-right'>
-                  <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
-                  <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
-                    data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
-                  <ul class='dropdown-menu folder_options btn-block '>
-                    {% if folders %}
-                    {% for folder in folders %}
-                      <li class='folder_choice'><a href='#!'> {{folder.name}} </a></li>
-                    {% endfor %}
-                    {% endif %}
-                  </ul>
+                <div class="col-md-3 mtb20 pull-right">
+                  <div class='col-md-12'>
+                    <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
+                    <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
+                      data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
+                    <ul class='dropdown-menu folder_options btn-block '>
+                      {% if folders %}
+                      {% for folder in folders %}
+                        <li class='folder_choice'><a href='#!'> {{folder.name}} </a></li>
+                      {% endfor %}
+                      {% endif %}
+                    </ul>
+                  </div>
                 </div>
                 <div class='col-md-9 mtb20 pull-left'>
                   <a href="{{page.url}}" target='_blank' class="list-group-item table table-responsive ">
@@ -234,5 +234,6 @@
 <script src="{% static "js/create_folder.js" %}"></script>
 <script src="{% static "js/dashboard.js" %}"></script>
 <script src="{% static "js/search.js" %}"></script>
+<script src="{% static "js/chart.js" %}"></script>
 
 {% endblock %}

@@ -68,8 +68,8 @@
     border: none !important;
 }
 
-.ml10 {
-    margin-left: 0px !important;
+.ml15 {
+    margin-left: 15px;
 }
 
 .nofocus, .btn:focus {

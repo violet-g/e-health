@@ -78,6 +78,8 @@ def dashboard(request):
         return HttpResponseRedirect("/ehealth/")
     try:
         topPages = Page.objects.order_by("times_saved")[:15]
+        for page in topPages:
+            page.summary=page.summary[:300] + "..."
         context_dict["pages"] = topPages
     except:
         #even if the top pages aren't found, the user can still use the website for its intended purpose, no need for redirecting
@@ -120,7 +122,7 @@ def profile(request,username):
             if errors == []:
                 #if there are no errors, save the changes made to the user profile and return him to his profile
                 user.save()
-                return HttpResponseRedirect("/ehealth/dashboard/")
+                return HttpResponseRedirect("/ehealth/profile/")
             else:
                 #if there are errors, return him back to the profile page with the form for information change
                 context_dict = getProfileInformation(username,request)

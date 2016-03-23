@@ -67,6 +67,11 @@
                 <div class="page-header">
                   <h1>Hello, {{ViewedUser.first_name}}!</h1>
                 </div>
+                <div class="col-md-5">
+                  <blockquote>First name: <h3>{{ViewedUser.first_name}}</h3></blockquote>
+                  <blockquote>Last name: <h3>{{ViewedUser.last_name}}</h3></blockquote>
+                  <blockquote>Email: <h3>{{ViewedUser.email}}</h3></blockquote>
+                </div>
                 
             <!--ViewedUser.0 is whether the data is public or not-->
             {% elif ViewedUser.public %}
@@ -155,21 +160,23 @@
                     <div class="alert alert-danger" role="alert">{{ error }}</div>
                 {% endfor %}
             {% endif %}
-            <form action="/ehealth/profile/{{ user }}/" method="post">
+            <form action="/ehealth/profile/{{ user }}/" method="post" class="ml15 col-md-6">
                 {% csrf_token %}
                 {{ update_form | bootstrap }}
-                <input name="update_details_button" class="btn btn-warning mtb10" type="submit" value="Update">
+                <input name="update_details_button" class="btn btn-warning btn-lg mtb10 mb20 pull-right" type="submit" value="Update">
             </form>
-            <div class="page-header">
-              <h3> Do you wish to have your personal details hidden or public ?</h3>
-            </div>
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-success btn-lg privacy_details_button mtb20">
-                <input type="radio" name="options" id="option1" autocomplete="off" > Hidden
-              </label>
-              <label class="btn btn-danger btn-lg privacy_details_button mtb20">
-                <input type="radio" name="options" id="option2" autocomplete="off"> Public
-              </label>
+            <div class="col-md-12">
+              <div class="page-header ml15">
+                <h3> Do you wish to have your personal details hidden or public ?</h3>
+              </div>
+              <div class="btn-group ml15" data-toggle="buttons">
+                <label class="btn btn-success btn-lg privacy_details_button mb20">
+                  <input type="radio" name="options" id="option1" autocomplete="off" > Hidden
+                </label>
+                <label class="btn btn-danger btn-lg privacy_details_button mb20">
+                  <input type="radio" name="options" id="option2" autocomplete="off"> Public
+                </label>
+              </div>
             </div>
       {% endif %}
     </div> 

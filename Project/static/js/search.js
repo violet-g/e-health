@@ -141,7 +141,7 @@ $(document).ready(function(){
                         
                         link_a = link_a.replace("#",sources[s][i]['link']);
                         title_h4 += sources[s][i]['title'] + "</h4>";
-                        summary_p += sources[s][i]['summary'] + "</p>";
+                        summary_p += sources[s][i]['summary'].slice(0,300)+"..." + "</p>";
                         source_p += "Source: "+ s + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
                         // var scores = sources[s][i]['readability_score'] + " " +
