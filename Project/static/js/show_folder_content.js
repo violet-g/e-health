@@ -55,7 +55,7 @@ $("body").on('dblclick', ".folder",function(){
                     
                     link_a = link_a.replace("#",pages[p]['url']);
                     title_h4 += pages[p]['title'] + "</h4>";
-                    summary_p += pages[p]['summary'].slice(0,100) + "</p>";
+                    summary_p += pages[p]['summary'].slice(0,300) + "</p>";
                     source_p += "Source: " + (pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
                     var scores = "<div class='mtb20'>" +
