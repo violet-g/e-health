@@ -5,6 +5,11 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />
 <div class="container">
+  
+    <!-- Invisible element for passing the name of the current user -->
+    <i id="current-user" user="{{ user }}"></i>
+  
+  
     <!-- menu on the left-->
     <div class="col-md-3 menu mtb20">
         <div class="col-md-13 col-md-offset-2 mb10">

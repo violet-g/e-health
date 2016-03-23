@@ -4,7 +4,7 @@ $("body").on('dblclick', ".folder",function(){
     var folder = $(this).text();
     // console.log(folder);
     var split_url = window.location.pathname.split("/");
-    var user=split_url.indexOf("profile");
+    var user=split_url.indexOf("profile");  //viewd user
     if(user!=-1)
         user = split_url[split_url.indexOf("profile")+1]
     else
@@ -21,6 +21,10 @@ $("body").on('dblclick', ".folder",function(){
 
         // handle a successful response
         success : function(data) {
+            
+            // Check if this is the right user
+            var logged_user = $.trim($('#current-user').attr('user'));
+            
             console.log(data); // another sanity check
             //On success show the data posted to server as a message
             // location.reload();
@@ -32,8 +36,8 @@ $("body").on('dblclick', ".folder",function(){
                 console.log(pages);
                 
                 var delete_page = "<button type='button' class='btn btn-primary btn-danger mtb20 delete_page_button'>Delete</button>"
-                
-                
+                if(user!=logged_user)
+                    delete_page="";
                 for(var p in pages)
                 {
                     // console.log(pages[p]);
@@ -54,7 +58,7 @@ $("body").on('dblclick', ".folder",function(){
                     summary_p += pages[p]['summary'].slice(0,100) + "</p>";
                     source_p += "Source: " + (pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
-                    var scores = "<div>" +
+                    var scores = "<div class='mtb20'>" +
                         "<div class='scores'> Read: " + parseInt($.trim(pages[p]['readability_score'])) + " </div>" + " " +
                         "<div class='scores'> Subj: " + parseInt($.trim(pages[p]['subjectivity_score'])) + "</div>" + " " + 
                         "<div class='scores'> Sens: " + parseInt($.trim(pages[p]['sentiment_score'])) + "</div>" + "</div>"
