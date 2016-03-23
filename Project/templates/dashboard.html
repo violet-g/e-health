@@ -156,8 +156,15 @@
             {% if pages %}
             {% for page in pages %}
               <div class="row {{page.source}} ">
+                <div class='col-md-9 mtb20 pull-left'>
+                  <a href="{{page.url}}" target='_blank' class="list-group-item table table-responsive ">
+                  <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
+                  <p class="list-group-item-text mtb10">{{ page.summary }}</p>
+                  <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
+                  </a>
+                </div>
+                
                 <div class="col-md-3 mtb20 pull-right">
-                  <div class='col-md-12'>
                     <button type='button' class='btn btn-block btn-success add_to_folder_button'>Add to folder</button>
                     <button type='button' class='btn btn-block btn-default dropdown-toggle folder_choice_button'
                       data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Choose folder</button>
@@ -168,14 +175,6 @@
                       {% endfor %}
                       {% endif %}
                     </ul>
-                  </div>
-                </div>
-                <div class='col-md-9 mtb20 pull-left'>
-                  <a href="{{page.url}}" target='_blank' class="list-group-item table table-responsive ">
-                  <h4 class="list-group-item-heading mtb15">{{ page.title }}</h4>
-                  <p class="list-group-item-text mtb10">{{ page.summary }}</p>
-                  <p class="list-group-item-text mtb10">Source: {{ page.source }}</p>
-                  </a>
                 </div>
               </div>
             {% endfor %}

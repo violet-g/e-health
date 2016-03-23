@@ -198,7 +198,7 @@ def add_page_ajax(request):
         try:
             page = Page.objects.get(url=request.POST["link"].strip())
         except:
-            page = Page(title=request.POST["title"].strip(),source=request.POST["source"].strip(),summary=request.POST["summary"].strip(),url=request.POST["link"].strip(),times_saved=0)
+            page = Page(title=request.POST["title"].strip(),source=request.POST["source"].strip(),summary=request.POST["summary"].strip(),url=request.POST["link"],times_saved=0)
             try:
                 temp = calculateScores(page.summary)
                 page.readability_score = temp["readability_score"]

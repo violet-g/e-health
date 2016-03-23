@@ -192,6 +192,7 @@ $(document).ready(function(){
         source=$.trim(source.split("Source:")[1]); //remove the "Source:" part of the string
         
         var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
+        
         if($.trim(folder)=="Choose folder")
             return
         // console.log()

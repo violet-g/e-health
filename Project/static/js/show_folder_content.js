@@ -55,9 +55,9 @@ $("body").on('dblclick', ".folder",function(){
                     source_p += "Source: " + (pages[p]['source']) + "</p>";
                     link_a += title_h4 + summary_p + source_p + "</a>";
                     var scores = "<div>" +
-                        "<div class='col-md-2'> Read: " + parseInt($.trim(pages[p]['readability_score'])) + "</div>" + " " +
-                        "<div class='col-md-2'> Subj: " + parseInt($.trim(pages[p]['subjectivity_score'])) + "</div>" + " " + 
-                        "<div class='col-md-2'> Sens: " + parseInt($.trim(pages[p]['sentiment_score'])) + "</div>" + "</div>"
+                        "<div class='scores'> Read: " + parseInt($.trim(pages[p]['readability_score'])) + " </div>" + " " +
+                        "<div class='scores'> Subj: " + parseInt($.trim(pages[p]['subjectivity_score'])) + "</div>" + " " + 
+                        "<div class='scores'> Sens: " + parseInt($.trim(pages[p]['sentiment_score'])) + "</div>" + "</div>"
                     cont+= "<div class='col-md-10 mtb20 pull-left'>" + link_a+"</div>" + delete_page + scores + "</div>";
                     
                     $("#modal_body").append(cont);
