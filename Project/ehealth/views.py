@@ -28,23 +28,22 @@ def index(request):
             login_form = LoginForm()
             register_form = RegisterForm(request.POST)
             if register_form.is_valid():
-                register(request.POST["username"],request.POST["email"],request.POST["password"],request.POST["first_name"],request.POST["last_name"])
-                user = authenticate(username = request.POST["username"].strip(),password = request.POST["password"].strip())
-                login(request,user)
-                return HttpResponseRedirect("dashboard/")
+                #if a user successfuly registers as AnonymousUser, he can go to profiles and automatically log himself in, which we dont want
+                if request.POST["username"] != "AnonymousUser":
+                    register(request.POST["username"],request.POST["email"],request.POST["password"],request.POST["first_name"],request.POST["last_name"])
+                    user = authenticate(username = request.POST["username"].strip(),password = request.POST["password"].strip())
+                    login(request,user)
+                    return HttpResponseRedirect("dashboard/")
+
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
             if login_form.is_valid():
                 username = request.POST["username"].strip()
                 password = request.POST["password"].strip()
-                #if a user successfuly registers as AnonymousUser, he can go to profiles and automatically log himself in, which we dont want
-                if username != "AnonymousUser":
-                    user = authenticate(username=username,password=password)
-                    login(request,user)
-                    return HttpResponseRedirect("dashboard/")
-                else:
-                    return HttpResponseRedirect("/ehealth/")
+                user = authenticate(username=username,password=password)
+                login(request,user)
+                return HttpResponseRedirect("dashboard/")
         else:
             return HttpResponse('Unknown error occurred.')
     else:
