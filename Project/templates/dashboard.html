@@ -19,20 +19,20 @@
         
         <div class="mtb10">
           <label for="r_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Readibility score: </label>
-          <input type="text" class="col-md-4" id="r_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
+          <input type="text" class="col-md-4" id="r_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px;">
         </div>
         <div id="slider1" class="col-md-12 mb20"></div>
         
                 
         <div class="mtb10">
           <label for="s_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Sensitivity score: </label>
-          <input type="text" class="col-md-4" id="s_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
+          <input type="text" class="col-md-4" id="s_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px;">
         </div>
         <div id="slider2" class="col-md-12 mb20"></div>
         
         <div class="mtb10">
           <label for="ss_score" class="col-md-8" style="font-family: serif;font-size: 17px;">Sentiment score: </label>
-          <input type="text" class="col-md-4" id="ss_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px";>
+          <input type="text" class="col-md-4" id="ss_score" readonly style="border:0; color:#f6931f; font-weight:bold;font-size: 18px;">
         </div>
         <div id="slider3" class="col-md-12 mb20"></div>
         
@@ -46,8 +46,7 @@
             <div class="btn-group btn-group-justified" role="group">
                 <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
                 <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
-                <div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus create_folder" role="button"
-                      type="button"></div>
+                <div id="create_folder" class="btn btn-success centered glyphicon glyphicon-plus create_folder" role="button"></div>
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
@@ -152,6 +151,11 @@
             </table>
           </a>
           -->
+          <img src='{% static 'img/loader.gif' %}' id='loading' class='img-responsive center-block' alt='Responsive image'>
+          
+          <div class='col-md-12 well' id="loading_results" >
+          </div>
+          
           <div id = "search_results" class = "col-md-12">
             {% if pages %}
             {% for page in pages %}
@@ -220,8 +224,7 @@
     <!--    </div>-->
         
     
-    
-</div>
+
 <!--<script src="{% static "hello.js" %}"></script> -->
 <!--<script src="{% static "js/headers.js" %}"></script>-->
 <script src="{% static "js/modal.js" %}"></script>

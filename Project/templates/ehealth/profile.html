@@ -3,7 +3,7 @@
 {% load bootstrap %}
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />
+<!--<link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}" />-->
 <div class="container">
   
     <!-- Invisible element for passing the name of the current user -->
@@ -21,8 +21,7 @@
             <div class="btn-group btn-group-justified" role="group">
                 <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
                 <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
-                <div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"
-                      type="button"></div>
+                <div id="create_folder" class="btn btn-success centered glyphicon glyphicon-plus" role="button"></div>
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash" role="button" ></div>
             </div>
         </div>
@@ -176,10 +175,10 @@
               </div>
               <div class="btn-group ml15" data-toggle="buttons">
                 <label class="btn btn-success btn-lg privacy_details_button mb20">
-                  <input type="radio" name="options" id="option1" autocomplete="off" > Hidden
+                  <input type="radio" name="options" id="option1"> Hidden
                 </label>
                 <label class="btn btn-danger btn-lg privacy_details_button mb20">
-                  <input type="radio" name="options" id="option2" autocomplete="off"> Public
+                  <input type="radio" name="options" id="option2"> Public
                 </label>
               </div>
             </div>
@@ -187,7 +186,7 @@
     </div> 
     <!-- Modal -->
     {% csrf_token %}
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header" id="modal_header">

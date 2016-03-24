@@ -13,15 +13,28 @@ $(document).ready(function(){
     //can be called only on jQuery objects with created click handlers
     //before trigger is called, and search.js is imported after dashboard.js
     $('#all_filter').trigger("click");
-
+    $("#loading").hide();
+    $("#loading_results").hide();
+    
+    
     $("#search_button").click(function(){
         var query=$.trim($("input[name=search_bar]").val());
         $("input[name=search_bar]").val('');
+        
         var category=$("#category").text();
         
         if(query=="")
             return;
+        
         $("#search_results").empty();
+        
+        $("#loading_results").hide();
+        $("#loading_results").empty();
+        
+        $("#loading").show();
+        $("#loading_results").append("<h4 class='text-center searched_query'> <em> Results for: "+query + "</em> </h4>");
+        // $("#search_results").append(loading);
+        
         $.ajax({
             url : '/ehealth/search_ajax/', // the endpoint,commonly same url
             type : "POST", // http method
@@ -37,8 +50,8 @@ $(document).ready(function(){
             // handle a successful response
             success : function(data) {
                 var link_a,title_h4,summary_p,source_p,search_result,username_h4,names_p,email_p;
-                              
-                
+                $("#loading").hide();
+                $("#loading_results").show();
                 console.log(data); // another sanity check
                 //On success show the data posted to server as a message
                 // location.reload();

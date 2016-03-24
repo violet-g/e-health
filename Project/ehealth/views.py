@@ -98,9 +98,11 @@ def profile(request,username):
             errors = []
             user = request.user
             user=User.objects.get(username=user)
+            password_changed=False
             if request.POST["password"] and request.POST["password_retype"]:
                 if request.POST["password"] == request.POST["password_retype"]:
                     user.set_password(request.POST["password"])
+                    password_changed=True
                 else:
                     errors += ["Passwords don't match"]
             elif (request.POST["password"] and not request.POST["password_retype"]) or (request.POST["password_retype"] and not request.POST["password"]):
@@ -127,7 +129,10 @@ def profile(request,username):
                 #if there are errors, return him back to the profile page with the form for information change
                 context_dict = getProfileInformation(username,request)
                 context_dict["errors"] = errors
-                return render(request, 'ehealth/profile.html',context_dict)
+                if password_changed:
+                    return HttpResponseRedirect("/ehealth/")
+                else:
+                    return render(request, 'ehealth/profile.html',context_dict)
         else:
             #if the form isnt valid, return the user back to the profile page with the information change form
             context_dict = getProfileInformation(username,request)
