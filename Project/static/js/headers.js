@@ -1,3 +1,7 @@
+
+//This script is deprecated 
+//was the original "buttons.js"
+
 $(document).ready(function(){
     $(".active_on_hover").hover(function(){
        $(this).toggleClass("active"); 

@@ -18,14 +18,15 @@
           </a>
         </div>
         <div class="col-md-13 row">
+            <!--create and delete folder buttons-->
             <div class="btn-group btn-group-justified" role="group">
-                <!--<div id=create_folder class="btn btn-success centered glyphicon glyphicon-plus" role="button"-->
-                <!--      type="button" data-toggle="modal" data-target="#new_folder_modal"></div>-->
                 <div id="create_folder" class="btn btn-success centered glyphicon glyphicon-plus {% if not logged_in %} disabled {% endif %} " role="button"></div>
                 <div id="delete_folder" class="btn btn-danger centered glyphicon glyphicon-trash {% if not logged_in %} disabled {% endif %} " role="button" ></div>
             </div>
         </div>
+        
         <div class="col-md-13 mt10 mb10 row">
+            <!--Goes through the user's folders and sets the menu on the left with buttons public and hidden depending on the value of that in the DB-->
             <ul class="nav nav-pills nav-stacked folder_list">
               {% if own_folders %}
               {% for folder in own_folders %}
@@ -40,7 +41,7 @@
                         Hidden
                       </button>
                   {% endif %}
-                
+                <!-- if you are not in your own profile, folder publicity is not manipulated hence, just regular folder names and no extra buttons-->
                 {% else %}
                   <li role="presentation" class="btn-block folder"><a class="nofocus" href="#!" >{{folder.name}}</a></li>
                 {% endif %}
@@ -51,6 +52,8 @@
                     Save
                   </button>
                 {% endif %}
+              {% else %}
+                <p class="text-center no_folders"><em>You have no folders yet</em></p>
               {% endif %}
             </ul>
         </div>

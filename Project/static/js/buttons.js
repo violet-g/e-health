@@ -1,14 +1,18 @@
 $(document).ready(function(){
+    //click handler for items with active_on_click
     $(".active_on_click").click(function(){
        $(".active").removeClass("active");
        $(this).toggleClass("active");
     });
     
+    
+    //menu on the left - clickable and slectable
     $("body").on("click",".nav a", function(){
        $(".nav").find(".active").removeClass("active");
        $(this).parent().addClass("active");
     });
     
+    //buttons for folder publicity in profile - switch between Public/Hidden
     $("body").on("click", ".privacy_button", function(){
         $(this).toggleClass("btn-danger btn-success")
         var text = $(this).text();
@@ -19,11 +23,4 @@ $(document).ready(function(){
         $("#save_folder_changes").removeClass("disabled");
     });
     
-    // $(".public_details_button").click(function(){
-    //     // $(".public_details_button, .hidden_details_button").removeClass("active");
-    //     $(".public_details_button").button('toggle');
-    //     $(".hidden_details_button").button('toggle');
-    //     // $(this).button('toggle');
-    //     // $(this).addClass('active');
-    // })
 })

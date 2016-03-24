@@ -7,9 +7,6 @@ $(document).ready(function(){
 
         // handle a successful response
         success : function(data) {
-            console.log(data);
-            console.log($(".privacy_details_button"));
-            // $(".privacy_details_button.active").removeClass("active");
             if(data['public']==true)
             {
                 console.log("true");
