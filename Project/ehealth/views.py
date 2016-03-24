@@ -140,6 +140,8 @@ def profile(request,username):
             return render(request, 'ehealth/profile.html',context_dict)
     elif request.method=="GET":
         context_dict = getProfileInformation(username,request)
+        if context_dict == "no_user":
+            return HttpResponse("Sorry... this user does not exist")
         return render(request,"ehealth/profile.html",context_dict)
 
 #this function is used in the profile function. Its purpose is to get the information about the user that is logged in,
@@ -151,11 +153,12 @@ def getProfileInformation(username,request):
     context_dict["update_form"] = update_form
     context_dict["logged_in"]=True
     own_folders=[]
+    print username
     try:
         user = User.objects.get(username=username)
         searcher = Searcher.objects.get(user=user)
     except:
-        return HttpResponse("User does not exist")
+        return "no_user"
     try:
         SessionUserID = request.user
         SessionUser=User.objects.get(username=SessionUserID)

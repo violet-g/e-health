@@ -57,7 +57,8 @@ $(document).ready(function(){
                         $(".alert").fadeOut(1750, function(){$(this).remove()});
                     }
                     $("#myModal").modal('hide');
-                    if(window.location.pathname.indexOf("profile") == -1)
+                    
+                    if(window.location.pathname.indexOf("profile") == -1 || !$("#save_folder_changes").length)
                     {
                         var new_folder = "<li role='presentation' class='btn-block folder'><a class='nofocus' href='#!' >" +
                                         fname +
