@@ -34,3 +34,8 @@ The population script has already created several users, which have some data in
 - username: *gabriela*; password: *gabriela*
 
 That should be about everything you need to get the server up and running, as well as to get some pre-made users.
+
+Quick guide for using the website:
+
+The URL to the websites login page is: http://127.0.0.1:8000/ehealth/
+Once you go there, you will be presented with a login and registration form. If you have an account - log in, otherwise - create an account. Once you log in, you will be redirected to your dashboard - from there you can access most of the application's functionality - searching for medicine,conditions,treatments or other users. You can save the different pages you find by selecting which folder you want to store them in from the button on the right of the page and then clicking the green add to folder button. You can delete folders by clicking on them and then clicking the delete icon. You can view the contents of a folder by double clicking on it. You can access your profile by clicking the Profile button in the top right. From the profile page, you can change your personal information as well as decide whether you want your personal information and/or folders to be visible to other users. If you make changes to any of the settings, click update and the changes will come into effect.
