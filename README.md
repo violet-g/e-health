@@ -39,3 +39,14 @@ Quick guide for using the website:
 
 The URL to the websites login page is: http://zdravko.pythonanywhere.com/ehealth/
 Once you go there, you will be presented with a login and registration form. If you have an account - log in, otherwise - create an account. Once you log in, you will be redirected to your dashboard - from there you can access most of the application's functionality - searching for medicine,conditions,treatments or other users. You can save the different pages you find by selecting which folder you want to store them in from the button on the right of the page and then clicking the green add to folder button. You can delete folders by clicking on them and then clicking the delete icon. You can view the contents of a folder by double clicking on it. You can access your profile by clicking the Profile button in the top right. From the profile page, you can change your personal information as well as decide whether you want your personal information and/or folders to be visible to other users. If you make changes to any of the settings, click update and the changes will come into effect.
+
+This webapp's security has been tested and these are the results:
+- Safe agains SQLinjection
+- An interesting bug - when trying to view a profile without being logged in, request.user
+doesnt return "" but instead - "AnonymousUser". That way, if someone is registered as 
+"AnonymousUser" and somebody else tries to look at profiles without being logged in, they
+will automatically be authenticated as "AnonymousUser". We fixed that by forbidding people to
+register as "AnonymousUser".
+- A small vulnerability is that strings in the Client side are not handled very well. As a result
+You can name a folder with "<script> your malicious script </script>" and it will be
+executed ONLY WHEN THE FOLDER IS CLICKED, for other users. 

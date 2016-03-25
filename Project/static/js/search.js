@@ -1,10 +1,3 @@
-// <a href="#" class="list-group-item  mtb20 table table-responsive">
-//     <h4 class="list-group-item-heading mtb15">Title</h4>
-//     <p class="list-group-item-text mtb10">Summary</p>
-//     <p class="list-group-item-text mtb10">Source: Bing</p>
-// </a>
-
-
 $(document).ready(function(){
 
     //The purpose of this is so the All button is clicked by default
@@ -13,8 +6,9 @@ $(document).ready(function(){
     //can be called only on jQuery objects with created click handlers
     //before trigger is called, and search.js is imported after dashboard.js
     $('#all_filter').trigger("click");
-    $("#loading").hide();
-    $("#loading_results").hide();
+    
+    $("#loading").hide(); //hide icon
+    $("#loading_results").hide();   //hide the box with "Results for: "
     
     
     $("#search_button").click(function(){
@@ -23,17 +17,18 @@ $(document).ready(function(){
         
         var category=$("#category").text();
         
+        //if query is empty do nothing
         if(query=="")
             return;
         
+        //remove the results and other unnecesary elements from prev searches
         $("#search_results").empty();
         
         $("#loading_results").hide();
         $("#loading_results").empty();
         
-        $("#loading").show();
+        $("#loading").show();   //show it until we get the data
         $("#loading_results").append("<h4 class='text-center searched_query'> <em> Results for: "+query + "</em> </h4>");
-        // $("#search_results").append(loading);
         
         $.ajax({
             url : '/ehealth/search_ajax/', // the endpoint,commonly same url
@@ -50,17 +45,13 @@ $(document).ready(function(){
             // handle a successful response
             success : function(data) {
                 var link_a,title_h4,summary_p,source_p,search_result,username_h4,names_p,email_p;
-                $("#loading").hide();
+    
+                $("#loading").hide();   //data is here, clear the loading ico
                 $("#loading_results").show();
-                console.log(data); // another sanity check
-                //On success show the data posted to server as a message
-                // location.reload();
+
                 if(data["users"])  //format: list of dictionaries
                 {
                     var users=data["users"];
-                    // for(var i in users)
-                    //     console.log(i);
-                    // console.log("maina"+data["users"]);
                     
                     for(var i=0; i<users.length;i++)
                     {
@@ -69,17 +60,13 @@ $(document).ready(function(){
                         names_p = "<p class='list-group-item-text mtb10'>"
                         email_p = "<p class='list-group-item-text mtb10'>"
                         
-                        //for localhost
-                        link_a = link_a.replace("#", "/ehealth/profile/" + users[i]["username"] + '/');
-                        
-                        //for Zdravko
-                        // link_a = link_a.replace("#", "https://e-health-mega-qkiq-pich.c9users.io/ehealth/" + users[i]["username"]);
+                        link_a = link_a.replace("#!", "/ehealth/profile/" + users[i]["username"] + '/');
                         
                         username_h4 += users[i]['username'] + "</h4>";
                         names_p += users[i]['first_name']+ " " + users[i]['last_name'] + "</p>";
                         email_p += "Email:" + users[i]['email'] + "</p>"
                         link_a += username_h4 + names_p + email_p + "</a>";
-                        console.log(link_a);
+
                         $("#search_results").append(link_a);
                     }
                 }
@@ -87,6 +74,7 @@ $(document).ready(function(){
                 var medlineplus=0;
                 var healthfinder=0;
                 var sources={}
+
                 //filter the cases of empty answers
                 if (data['bing_result'] && data['bing_result'].length)
                 {
@@ -104,23 +92,14 @@ $(document).ready(function(){
                     sources["Healthfinder"]=healthfinder;
                 }   
                 var len = 0;
+
+                //var len is the length of the longest source
+                //so that we can present max elements later on
                 for(var i in sources)
                     if(len<sources[i].length)
                         len=sources[i].length;
-                // sources={"MedlinePlus":medlineplus,"Healthfinder":healthfinder,"Bing":bing};
-                // var add_to_folder = "<div class='btn-group col-md-2 mtb20 pull-right'>" +
-                //                       "<button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
-                //                         "Action" +
-                //                       "</button>" +
-                //                       "<ul class='dropdown-menu'>" +
-                //                         "<li><a href='#'>Action</a></li>" +
-                //                         "<li><a href='#'>Another action</a></li>" +
-                //                         "<li><a href='#'>Something else here</a></li>" +
-                //                         "<li role='separator' class='divider'></li>" +
-                //                         "<li><a href='#'>Separated link</a></li>" +
-                //                       "</ul>" +
-                //                     "</div>";
                 
+                //add to folder button with dropdown
                 var add_to_folder = "<div class='col-md-3 mtb20 pull-right'>" +
                                       "<button type='button' class='btn btn-block btn-success add_to_folder_button'>" +
                                         "Add to folder" +
@@ -137,14 +116,18 @@ $(document).ready(function(){
                 });
                 add_to_folder+="</ul>" + "</div>";
                 
-                
+                //go through len elements in all sources
                 for(var i=0;i<len; i++)
                 {
                     for(var s in sources)
                     {
+                        //if that source doesnt have that many items
+                        //go on to the next one
                         if(sources[s].length<=i)
                             continue;
-                     
+                        
+                        //wrap the link in a div and the buttons in another div
+                        
                         var cont = "<div class='row "+ s + "'>"       
                         
                         link_a = "<a id='link' href='#' target='_blank' class='list-group-item table table-responsive'>"
@@ -157,15 +140,11 @@ $(document).ready(function(){
                         summary_p += sources[s][i]['summary'].slice(0,300)+"..." + "</p>";
                         source_p += "Source: "+ s + "</p>"
                         link_a += title_h4 + summary_p + source_p + "</a>";
-                        // var scores = sources[s][i]['readability_score'] + " " +
-                        // sources[s][i]['subjectivity_score'] + " " + 
-                        // sources[s][i]['sentiment_score'] + " "
                         
                         cont+= "<div class='col-md-9 mtb20 pull-left'>" + link_a+"</div>" + add_to_folder + "</div>"
-                        // $("#search_results").append(link_a);
-                        // $("#search_results").append(add_to_folder);
+                        
                         $("#search_results").append(cont);
-                        // $("#search_results").append(add_to_folder);
+                        
                         
                     }
                 };
@@ -185,30 +164,27 @@ $(document).ready(function(){
         }
     });
     
-    // $(".folder_choice").click(function(){
+    //change the choices in the dropdown button under add to folder
     $("body").on("click",".folder_choice", function(){
-        // $(this).parent().children(".folder_choice_button").text();
-        // $(".folder_choice_button").text($(this).text());
-        // console.log($(this).parent().parent().children(".folder_choice_button").text());
         $(this).parent().parent().children(".folder_choice_button").text($(this).text());
     });
-    // $(".add_to_folder_button").click(function(){
+    
+    
     $("body").on('click','.add_to_folder_button', function(){
-        // console.log($(this).text());
-        // console.log($(this).parent().parent().children().text());
         var folder = $(this).parent().children(".folder_choice_button").text();
-        // var folder = $(".folder_choice_button").text();
+        
+        // if a folder is not chosen do nothing
+        if($.trim(folder)=="Choose folder")
+            return;
+        
         var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
         var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
-        //FIX IT this doesnt get the REAL source. 
+        
         var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
         source=$.trim(source.split("Source:")[1]); //remove the "Source:" part of the string
         
         var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
-        
-        if($.trim(folder)=="Choose folder")
-            return
-        // console.log()
+            
         $.ajax({
                 url : '/ehealth/add_page_ajax/', // the endpoint,commonly same url
                 type : "POST", // http method
@@ -222,7 +198,8 @@ $(document).ready(function(){
 
                 // handle a successful response
                 success : function(data) {
-                    console.log(data);
+                    // console.log(data);
+                    // the backend handles the request
                 },
                 // handle a non-successful response
                 error : function(xhr,errmsg,err) {
@@ -230,11 +207,6 @@ $(document).ready(function(){
                 }
         })
         
-        
-        // console.log($(this).parent().parent().parent())
-        // var txt=$(this).text().substr(0,15);
-        // if(txt.length < $(this).text().length)
-        //     txt+="..."
     });
 
 

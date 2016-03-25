@@ -1,16 +1,15 @@
 
 // $(".folder").dblclick(function(){
 $("body").on('dblclick', ".folder",function(){
-    var folder = $(this).text();
-    // console.log(folder);
+    var folder = $(this).text();    //get the name of the folder
+    
     var split_url = window.location.pathname.split("/");
     var user=split_url.indexOf("profile");  //viewd user
     if(user!=-1)
         user = split_url[split_url.indexOf("profile")+1]
     else
         user=""
-    console.log();
-    console.log("test");
+        
     $.ajax({
         url : '/ehealth/checkout_folder_ajax/', // the endpoint,commonly same url
         type : "POST", // http method
@@ -25,19 +24,21 @@ $("body").on('dblclick', ".folder",function(){
             // Check if this is the right user
             var logged_user = $.trim($('#current-user').attr('user'));
             
-            console.log(data); // another sanity check
             //On success show the data posted to server as a message
-            // location.reload();
             $("#modal_header").append("<h4 id='added_title'>" + folder + "</h4>");
+            
+            // if there are resulting pages
             if(data['pages'])
             {
                 var link_a,title_h4,summary_p,source_p,search_result;
                 var pages = data["pages"]
-                console.log(pages);
                 
                 var delete_page = "<button type='button' class='btn btn-primary btn-danger mtb20 delete_page_button'>Delete</button>"
+                
+                //remove delete button if user is not logged in and viewing offline
                 if(user!=logged_user)
                     delete_page="";
+                    
                 for(var p in pages)
                 {
                     // console.log(pages[p]);
@@ -67,20 +68,13 @@ $("body").on('dblclick', ".folder",function(){
                     $("#modal_body").append(cont);
                     
                     $(".delete_page_button").click(function(){
-                        // console.log($(this).text());
-                        // console.log($(this).parent().parent().children().text());
-                        
-                        // var folder = $("#choose_folder").text();
-                        // var title = $(this).parent().parent().children(".pull-left").children("a").children("#title").text();
-                        // var summary = $(this).parent().parent().children(".pull-left").children("a").children("#summary").text();
-                        // var source = $(this).parent().parent().children(".pull-left").children("a").children("#source").text();
-                        // var link = $(this).parent().parent().children(".pull-left").children("a").attr("href");
+                        //the link has the class pull-left so it was unnecessary to have aditional one
                         var link = $(this).parent().children(".pull-left").children("a").attr("href");
-                        var row = $(this).parent();
-                        // if($.trim(folder)=="Choose folder")
-                        //     return
+                        var row = $(this).parent(); //by putting the row in a var it will be easier to remove it later
+                        
                         var folder = $("#added_title").text();
-                        console.log(link);
+                        
+                        //ajax to delete pages
                         $.ajax({
                                 url : '/ehealth/delete_page_ajax/', // the endpoint,commonly same url
                                 type : "POST", // http method
@@ -91,10 +85,9 @@ $("body").on('dblclick', ".folder",function(){
     
                                 // handle a successful response
                                 success : function(data) {
-                                    console.log(data);
-                                    // console.log(row);
-                                    // console.log(row.parent());
+
                                     row.remove();
+
                                 },
                                 // handle a non-successful response
                                 error : function(xhr,errmsg,err) {
