@@ -124,6 +124,9 @@ def profile(request,username):
             if errors == []:
                 #if there are no errors, save the changes made to the user profile and return him to his profile
                 user.save()
+                if password_changed:
+                    return HttpResponseRedirect("/ehealth/")
+                    
                 return HttpResponseRedirect("/ehealth/profile/")
             else:
                 #if there are errors, return him back to the profile page with the form for information change
