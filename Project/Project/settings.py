@@ -23,7 +23,7 @@ TEMPLATE_DIRS = (
 SECRET_KEY = '2pjve8q9v62da5n*h$%o^i3g6_t4ia=ohty$38!q9)^amag2&j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -31,7 +31,7 @@ TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
 TEMPLATE_DIRS = (TEMPLATE_PATH,)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['zdravko.pythonanywhere.com']
 
 
 # Application definition

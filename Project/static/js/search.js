@@ -60,7 +60,7 @@ $(document).ready(function(){
                         names_p = "<p class='list-group-item-text mtb10'>"
                         email_p = "<p class='list-group-item-text mtb10'>"
                         
-                        link_a = link_a.replace("#!", "/ehealth/profile/" + users[i]["username"] + '/');
+                        link_a = link_a.replace("#", "/ehealth/profile/" + users[i]["username"] + '/');
                         
                         username_h4 += users[i]['username'] + "</h4>";
                         names_p += users[i]['first_name']+ " " + users[i]['last_name'] + "</p>";
