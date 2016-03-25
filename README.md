@@ -35,7 +35,7 @@ The population script has already created several users, which have some data in
 
 That should be about everything you need to get the server up and running, as well as to get some pre-made users.
 
-IMPORTANT NOTICE: When running on localhost with debug=False in settings.py static files aren't loading and the application does not work properly. For the purpose of the application running on localhost, debug has been set to True, which is not advisable in production. On pythonanywhere, the application works correctly with debug set to False.
+IMPORTANT NOTICE: When running on localhost with debug=False in settings.py static files aren't loading and the application does not work properly. For the purpose of the application running on localhost, you need to set debug to True, which is not advisable in production. On pythonanywhere, the application works correctly with debug set to False.
 
 Quick guide for using the website:
 
