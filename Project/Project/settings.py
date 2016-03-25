@@ -31,7 +31,7 @@ TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
 TEMPLATE_DIRS = (TEMPLATE_PATH,)
 
-ALLOWED_HOSTS = ['zdravko.pythonanywhere.com']
+ALLOWED_HOSTS = ['zdravko.pythonanywhere.com','127.0.0.1']
 
 
 # Application definition
