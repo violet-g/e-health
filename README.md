@@ -35,6 +35,9 @@ The population script has already created several users, which have some data in
 
 That should be about everything you need to get the server up and running, as well as to get some pre-made users.
 
+IMPORTANT NOTICE: When running with debug=False in settings.py static files aren't loading and the application does not work properly.
+We noticed this issue later on and did not have enough time to fix it. For the purpose of testing the application with debug=True, even though that is not advised in the production stage.
+
 Quick guide for using the website:
 
 The URL to the websites login page is: http://zdravko.pythonanywhere.com/ehealth/
