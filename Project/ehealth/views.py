@@ -35,6 +35,7 @@ def index(request):
                     login(request,user)
                     return HttpResponseRedirect("dashboard/")
 
+        #if the user is trying to log in and all of his information is correct - logs him in and redirects him to his dashboard, otherwise, return him to the login page
         elif form_type == 'login':
             login_form = LoginForm(request.POST)
             register_form = RegisterForm()
@@ -50,6 +51,7 @@ def index(request):
         register_form = RegisterForm()
         login_form = LoginForm()
 
+    #if the user has not posted a request, we show him the login/register page
     return render(request, 'login/index.html',{
         'login_form': login_form,
         'register_form': register_form,
@@ -264,7 +266,7 @@ def privacy_details_ajax(request):
     except:
         searcher=Searcher() # create an empty searcher - that's fine because we would only need the public field
                             # and it breaks when the user is not logged in
-        
+
     if request.method=='POST' and request.is_ajax():
         if request.POST['publicity']=="Public":
             searcher.public=True
@@ -276,7 +278,7 @@ def privacy_details_ajax(request):
         return JsonResponse({"public":searcher.public})
 
 
-#This function for adding a new user profile
+#This function is for adding a new user profile
 def new_folder_ajax(request):
     fname=None
     if request.method == 'POST' and request.is_ajax():
@@ -391,9 +393,6 @@ def search_ajax(request):
             result["subjectivity_score"] = temp["subjectivity_score"]
             result["sentiment_score"] = temp["sentiment_score"]
 
-        print "readability: " + request.POST["readability_score"]
-        print "sentiment: " + request.POST["sentiment_score"]
-        print "subjectivity: " + request.POST["subjectivity_score"]
         readabilityS = int(request.POST["readability_score"])
         sentimentS = int(request.POST["sentiment_score"])
         subjectivityS = int(request.POST["subjectivity_score"])
@@ -428,8 +427,9 @@ def sortResults(results,readability,sentiment,subjectivity):
         else:
             toBack.append(result)
     return AllConditions + TwoConditions + OneCondition + toBack
-#content = unicode(q.content.strip(codecs.BOM_UTF8), 'utf-8')
 
+
+#Translates the scores to a scale from 0 to 100
 def calculateScores(text):
     text = smart_bytes(text,encoding="utf-8",strings_only=False,errors="replace")
     temp = TextBlob(text)

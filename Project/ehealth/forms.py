@@ -81,29 +81,3 @@ class ChangeDetailsForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': "Please enter your new e-mail"}),label='e-mail',required=False)
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Enter your new password"}),label="Change password",required=False)
     password_retype = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': "Please re-enter your new password"}),required=False)
-    
-    # def clean(self):
-    #     try:
-    #         emailTaken = User.objects.get(email=self.cleaned_data.get("email"))
-    #     except:
-    #         emailTaken = None
-    #     if emailTaken:
-    #         raise forms.ValidationError("email is already in use")
-
-
-    #     if self.cleaned_data.get("password"):
-    #         if self.cleaned_data.get("password") != self.cleaned_data.get("password_retype"):
-    #             raise forms.ValidationError("Passwords don't match", code='not_match')
-    #         try:
-    #             pass
-    #         except:
-    #             raise forms.ValidationError("Please enter password in both fields")
-
-    #     return self.cleaned_data
-    
-
-
-
-        #password = self.cleaned_data.get('password')
-        #if check_password(password,user.password) == False: #password != user.password:
-        #    raise forms.ValidationError('Wrong password', code='wrong_password')
