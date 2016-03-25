@@ -153,7 +153,8 @@ $(document).ready(function(){
 
             // handle a non-successful response
             error : function(xhr,errmsg,err) {
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                $("#loading").hide();   //Something broke. User shouldn't wait
+                // console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
          });
     });
